@@ -1,0 +1,98 @@
+:root {
+  --primary: #7b2ff7;
+  --primary-hover: #6622cc;
+  --card: #ffffff;
+  --border: #e0e0e6;
+  --radius: 16px;
+  --text-muted: #666;
+  --text-dark: #444;
+  --button-text: #dcd2ec;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.panel-link {
+  display: block;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 00;
+  color: #000;
+  text-decoration: none;
+  padding: 0.8rem 0rem; /* más compacto */
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  justify-content: center;
+  padding-top: 2rem
+}
+
+
+.panel-link:hover {
+  color: #6c2bd9;
+  border-bottom: 2px solid #6c2bd9;
+}
+
+
+.panel-link.active {
+  color: #6c2bd9;
+  background-color: rgba(108, 43, 217, 0.1); /* violeta opaco */
+  border: 2px solid #6c2bd9;
+  border-radius: 8px; /* bordes redondeados */
+  transform: translateX(2px);
+  padding-top: 0.8rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.panel-de-control {
+  position: fixed;
+  top:59px;
+  left: 0;
+  width: 150px;
+  height: 90%;
+  background-color: #fff;
+  padding: 1.2rem;
+  font-family: 'Segoe UI', sans-serif;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* esto empuja el footer al fondo */
+  gap: 1rem;
+    padding-left: 0.7rem;
+}
+
+.panel-footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.panel-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  padding-left: 1.3rem;
+}
+
+.panel-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6c2bd9;
+  padding-right: 1.5rem;
+}
+
+.panel-container{
+  color: black;
+  padding: 6rem;
+  background-color: #f9f9f9;
+}
+

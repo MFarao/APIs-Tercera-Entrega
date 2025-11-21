@@ -1,0 +1,62 @@
+.home-page {
+  color:black;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+.home-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.main-content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.community-cta {
+  color: white;
+  text-align: center;
+  margin-top: 50px;
+  padding: 40px;
+  background-color: #8a2be2;
+}
+
+.community-cta h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.community-cta p {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+}
+
+.community-cta button {
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.community-cta button:hover {
+  background-color: #6a1fb8;
+}
+
+.main-footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #333;
+  color: white;
+  margin-top: 50px;
+}

@@ -1,0 +1,122 @@
+.filtro-producto {
+  position: fixed;
+  top:59px;
+  left: 0;
+  width: 210px;
+  height: 90%;
+  background-color: #ffffffd9;
+  padding: 1.2rem;
+  font-family: 'Segoe UI', sans-serif;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* esto empuja el footer al fondo */
+  gap: 1rem;
+    padding-left: 0.7rem;
+  font-family: 'Space Grotesk', sans-serif;
+
+}
+
+.filtro-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80%;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background-color: #fff;
+}
+
+.filtro-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  padding-left: 1.3rem;
+  padding-bottom: 1rem;
+}
+
+.filtro-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6c2bd9;
+  padding-right: 1.5rem;
+  padding-bottom: 1rem;
+}
+
+.categoria-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+}
+
+.categoria-btn {
+  background-color: #a66eeb;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+
+}
+
+.categoria-btn.activa {
+  color: #5d00ff;
+  background-color: rgba(154, 102, 243, 0.283); /* violeta opaco */
+  border: 2px solid #6c2bd9;
+  border-radius: 18px; /* bordes redondeados */
+  transform: translateX(2px);
+  padding-top: 0.8rem;
+}
+
+.precio-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 30px;
+}
+
+.precio-inputs input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #f9f9f9;
+  color: #333;
+  width: 10%;
+}
+
+.text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  border-bottom: 3px solid #6c2bd9;
+  border-bottom-width: 1.5 ;
+
+}
+
+.aplicar-btn {
+  background-color: #6c2bd9;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+    margin-bottom: 3rem;
+    width: 160px;
+}
+
+.aplicar-btn:disabled {
+  background-color: #626262;    /* gris oscuro metálico */
+  color: #767272;
+  box-shadow: inset 0 0 4px #555;
+  background: transparent;
+}
