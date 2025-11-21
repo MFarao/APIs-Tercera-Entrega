@@ -22,7 +22,6 @@ const ProductForm = ({ product, onClose, onRefresh }) => {
     setFormData((prev) => ({ ...prev, [name]: parsedValue }));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

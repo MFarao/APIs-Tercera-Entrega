@@ -6,6 +6,7 @@ import logo from "../assets/logo.png";
 import Swal from 'sweetalert2';
 import { setBusqueda } from "../redux/productSlice";
 import { logout } from "../redux/userSlice";
+import carritoIcon from "../assets/carrito.png"; 
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -20,6 +21,27 @@ const Navbar = () => {
     dispatch(logout()); // hacemos el logout seteando el estado global de user en sesion a null
     navigate("/");
   };
+
+  const handleCarritoClick = () => { 
+  if (userEnSesion) {// si el usuario esta en sesion lo manda a checkout
+    navigate("/checkout");
+  } else {// si no le pregunta si quiere iniciar sesion
+    Swal.fire({
+      title: "¿Querés iniciar sesión?",
+      text: "Necesitás estar logueado para ver tu carrito.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#6b4eff",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Sí, iniciar sesión",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/inicio");
+      }
+    });
+  }
+};
 
   const confirmarLogout = () => { // preguntamos si quiere cerrar sesion
   Swal.fire({
@@ -76,7 +98,10 @@ const Navbar = () => {
         >
           Productos
         </Link>
-        {userEnSesion?.role === "USER" && (
+        <Link to="/sale" className={`nav-link ${location.pathname === "/sale" ? "active" : ""}`}>
+          Sale
+        </Link>
+        {userEnSesion?.role === "USER" && ( // solo el usuario va a poder ver sus ordenes
           <Link
             to="/misordenes"
             className={`nav-link ${location.pathname === "/misordenes" ? "active" : ""}`}
@@ -84,10 +109,7 @@ const Navbar = () => {
             Mis Órdenes
           </Link>
         )}
-        <Link to="/sale" className={`nav-link ${location.pathname === "/sale" ? "active" : ""}`}>
-          Sale
-        </Link>
-        {userEnSesion?.role === "ADMIN" && (
+        {userEnSesion?.role === "ADMIN" && ( // solo el admin puede ver el panel de control
           <Link
             to="/panelControl/productos"
             className={`nav-link ${location.pathname === "/panelControl" ? "active" : ""}`}
@@ -104,6 +126,10 @@ const Navbar = () => {
       )}
 
       <div className="navbar-auth">
+        <button to="/checkout" className="navbar-cart" onClick = {handleCarritoClick}> 
+          <img src={carritoIcon} alt="Carrito" className="cart-icon" />
+          <span className="cart-text">Carrito</span>
+        </button>
         {userEnSesion ? (
           <>
             {/* uso firstname porque en el backend usabas firstname/lastname */}

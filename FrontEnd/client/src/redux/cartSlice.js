@@ -10,15 +10,26 @@ const cartSlice = createSlice({
     sumarCarrito: (state, action) => {
       const producto = action.payload; // agarramos el producto
       const existe = state.items.find(item => item.id === producto.id); // buscamos si existe en el carrito y lo tomamos si asi lo ess
-      if (existe) {
-        existe.cantidad += 1; // le sumamos uno a su cantidad
+      if (existe) { // verificamos si ya estaba en el carrito
+
+        if ( existe.cantidad < producto.stock){// si la cantidad es menos al stock le sumamos uno
+            existe.cantidad += 1; 
+
+            if(producto.priceDescuento !== null){ // si tiene precio descuento lo sumamos al total
+              state.total += producto.priceDescuento;
+            }else{
+              state.total += producto.price; // si no tiene el preciodescuento sumamos el normal
+            }
+          }
+
       } else {
-        state.items.push({ ...producto, cantidad: 1 }); // si no estaba lo agregamos con cantidad 1
-      }
-      if(producto.priceDescuento !== null){ // si tiene precio descuento lo sumamos al total
-        state.total += producto.priceDescuento;
-      }else{
-        state.total += producto.price; // si no tiene el preciodescuento sumamos el normal
+          state.items.push({ ...producto, cantidad: 1 }); // si no estaba lo agregamos con cantidad 1
+          
+          if(producto.priceDescuento !== null){ // si tiene precio descuento lo sumamos al total
+            state.total += producto.priceDescuento;
+          }else{
+            state.total += producto.price; // si no tiene el preciodescuento sumamos el normal
+        }
       }
     },
     sacarCarrito: (state, action) => {

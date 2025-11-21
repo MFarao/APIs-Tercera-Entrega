@@ -179,5 +179,34 @@
   background-color: #6c2bd9;
 }
 
+.navbar-cart {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+}
+
+.navbar-cart:hover {
+  background-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cart-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.cart-text {
+  line-height: 1;
+}
 
 

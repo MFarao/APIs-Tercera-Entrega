@@ -11,23 +11,14 @@ const ControlProducto = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setShowForm(true);
   };
 
   const handleToggleActivo = async (id) => {
-    try {
-      await dispatch(in_activateProduct(id)).unwrap();
-    } catch (err) {
-      console.error("Error al activar/inactivar:", err);
-    }
+    dispatch(in_activateProduct(id));
   };
-
 
   const handleRefresh = () => { 
     dispatch(fetchProducts());

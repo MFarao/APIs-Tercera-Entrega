@@ -178,3 +178,25 @@
   text-align: center;
   margin-top: 100px;
 }
+
+.boton-carrito {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.boton-carrito:hover {
+  background-color: var(--primary-hover);
+}
+
+.boton-carrito.pedido {
+  background-color: #2ecc71; /* verde éxito */
+  color: #fff;
+  cursor: default;
+}

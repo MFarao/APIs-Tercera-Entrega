@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import "../../estilos/DetalleProducto.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setUltimaRuta } from "../../redux/uiSlice";
-import { fetchSingleProduct } from "../../redux/productSlice";
+import { setProductoSeleccionado } from "../../redux/productSlice";
+import { sumarCarrito } from "../../redux/cartSlice";
+import Swal from "sweetalert2";
 
 const DetalleProducto = () => {
   const [imagenPrincipal, setImagenPrincipal] = useState("");
@@ -12,9 +14,12 @@ const DetalleProducto = () => {
   const dispatch = useDispatch();
   const { userEnSesion } = useSelector((state) => state.user);
   const { productoSeleccionado } = useSelector((state) => state.products);
+  const [agregado, setAgregado] = useState(false);
+  const navigate = useNavigate();
+
 
     useEffect(() => {
-    dispatch(fetchSingleProduct(id)); //  hacemos el fetch del producto segun el id 
+    dispatch(setProductoSeleccionado(id)); //  hacemos el fetch del producto segun el id 
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -34,7 +39,27 @@ const DetalleProducto = () => {
     }
   };
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const handleAgregarClick = () => { 
+    dispatch(sumarCarrito(productoSeleccionado));
+    setAgregado(true);
+
+      Swal.fire({
+      title: "Agregado al carrito ✅",
+      text: "¿Querés ir al checkout ahora?",
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonColor: "#6b4eff",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Sí, ir al checkout",
+      cancelButtonText: "Seguir comprando",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/checkout");
+      }
+    });
+
+  };
+
 
   return (
     <main className="detalle-container">
@@ -77,13 +102,13 @@ const DetalleProducto = () => {
           </p>
         )}
 
-        {enSesion() ? ( // si esta en sesion vemos que es rol tiene para mostrarlo o no // si no esta iniciado se muestra el boton de inicia sesion y compra
-          userEnSesion?.role === "USER"? (
-            <Link to={`/checkout/${id}`} className="boton-carrito">Comprar</Link>
-          ) : (
-            null
-          )
-        ) : <Link to={"/inicio"} className="boton-carrito">Iniciá sesión y compra!</Link>} 
+        {enSesion() ? (// si esta en sesion vemos que es rol tiene para mostrarlo o no // si no esta iniciado se muestra el boton de inicia sesion y compra
+            userEnSesion?.role === "USER" ? (
+                !agregado ? ( // chequeamos si se apreto el boton y si es asi mostramos que esta pedido si no el boton de agregar
+                  <button className="boton-carrito" onClick={handleAgregarClick}> Agregar al Carrito </button>) : (
+                  <button className="boton-carrito pedido" disabled>Pedido</button>)) : null
+            ) : (<Link to="/inicio" className="boton-carrito">Iniciá sesión y compra!</Link>
+            )}
 
         <div className="detalles-tecnicos">
           <h2>Detalle del Producto</h2>

@@ -43,7 +43,7 @@ const CategoryForm = ({ category, onClose, onRefresh }) => {
           required
         />
         <div className="form-actions">
-          <button type="submit">Save</button>
+          <button type="submit">Guardar</button>
           <button type="button" onClick={onClose}>Cancel</button>
         </div>
       </form>

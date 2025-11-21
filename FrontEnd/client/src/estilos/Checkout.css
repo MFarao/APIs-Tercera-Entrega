@@ -34,6 +34,7 @@
   max-width: 800px;
   transition: all 0.3s ease;
   height: 230px;
+  margin-bottom: 2rem; 
 }
 
 .checkout-card-horizontal:hover {
@@ -323,4 +324,22 @@
 .mpLogo{
     height: 30px;
     border-radius: 8px;
+}
+
+.carrito-vacio {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+.carrito-vacio h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.carrito-vacio p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }

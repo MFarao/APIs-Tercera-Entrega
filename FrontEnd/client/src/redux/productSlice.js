@@ -8,54 +8,38 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", async ()
   return data;
 });
 
-export const fetchSingleProduct = createAsyncThunk( "products/fetchSingleProduct", async (id) => {
-  const { data } = await axios.get(`${URL}/${id}`);
-  return data;
-});
-
 export const createProduct = createAsyncThunk(
   "products/createProduct",
   async ( body, { getState, rejectWithValue }) => { 
-    try {
-      const token = getState().user.token;
-      const { data } = await axios.post(URL, body, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "No se pudo crear el producto");
-    }
+    const token = getState().user.token;
+    const { data } = await axios.post(URL, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
   }
 );
 
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
-  async ( {body, idProducto}, { getState, rejectWithValue }) => { // inyecyamos get state para poder acceder al token
-    try {
+  async ( {body, idProducto}, { getState }) => { // inyecyamos get state para poder acceder al token
       const token = getState().user.token; // sacamos el token del estado global
-
       const response = await axios.put(`${URL}/${idProducto}`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }); //hacemos un PUT con los datos y el token
-
       return response.data; // Devolvemos el producto actualizado
-
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "No se pudo actualizar el producto");
-    }
   }
 );  
 
 export const in_activateProduct = createAsyncThunk(
   "products/in_activateProduct",
-  async ( idProducto, { getState, rejectWithValue }) => { 
+  async ( idProducto, { getState }) => { 
       const token = getState().user.token; // sacamos el token del estado global
-      const { data } = await axios.put(`${URL}/${idProducto}/in_activar`, {}, {
+      const response = await axios.put(`${URL}/${idProducto}/in_activar`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       }); 
-      return data; // Devolvemos el producto actualizado
+      return response.data; // Devolvemos el producto actualizado
   }
 );
 
@@ -76,6 +60,11 @@ const productSlice = createSlice({
     setBusqueda: (state, action) => { // agregamos una accion de busqueda q llene la variable con los datos
     state.busqueda = action.payload;
     },
+    setProductoSeleccionado: (state, action) => { // accion para setear el producto seleccionado
+      state.productoSeleccionado = state.items.find(
+        (product) => product.id === Number(action.payload)
+      ) || null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -90,10 +79,6 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      })
-      .addCase(fetchSingleProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.productoSeleccionado = action.payload;
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.items = [...state.items, action.payload];
@@ -122,4 +107,5 @@ const productSlice = createSlice({
 
 export const { setFiltrosAplicar } = productSlice.actions;
 export const { setBusqueda } = productSlice.actions;
+export const { setProductoSeleccionado } = productSlice.actions;
 export default productSlice.reducer;

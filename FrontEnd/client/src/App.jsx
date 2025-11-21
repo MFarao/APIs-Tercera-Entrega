@@ -40,7 +40,6 @@ function App() {
         <Route path="/productos"  className="productos-container"element={<Productos />}/>  
         <Route path="/sale" element={<Sale  />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
-        <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/configuracion" element={<ConfiguracionUsuario />} />
 
         {/* Protegidas ADMIN */}
@@ -63,6 +62,13 @@ function App() {
           element={
             <ProtectedRoute requiredRole="USER">
               <Ordenes />
+            </ProtectedRoute>
+          } />
+
+        <Route path="/checkout" 
+          element={
+            <ProtectedRoute requiredRole="USER">
+              <Checkout />
             </ProtectedRoute>
           } />
 

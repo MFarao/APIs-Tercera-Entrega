@@ -198,19 +198,19 @@ public class ProductServiceImpl implements ProductService{
         }throw new ProductNotExistsException();
     }
 
-    @Transactional(rollbackFor = Throwable.class) // si el producto esta activo inactiva el producto y cancela sus ordenes. Si esta inactivo, lo contrario
+    @Transactional(rollbackFor = Throwable.class)
     public Product in_activarProductoById(Long productId) throws ProductNotExistsException {
-        if (productRepository.existsById(productId)) {
-            Product product = productRepository.findById(productId).get();
-            if(product.isActivo()){
-                productRepository.inactivarProductoById(productId);
-            }
-            if (!product.isActivo()) {
-                productRepository.activarProductoById(productId);
-            }
-            productRepository.save(product);
-            return product;
-        }throw new ProductNotExistsException();
+        return productRepository.findById(productId)
+            .map(product -> {
+                if (product.isActivo()) {
+                    product.setActivo(false);
+                    // cancelar órdenes si corresponde
+                } else {
+                    product.setActivo(true);
+                }
+                return productRepository.save(product); // ahora sí devuelve el objeto actualizado
+            })
+            .orElseThrow(ProductNotExistsException::new);
     }
 
     public boolean tieneDescuento(Long productId){
