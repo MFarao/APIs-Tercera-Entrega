@@ -30,13 +30,11 @@ const handleDelete = async (id) => {
   if (!confirm.isConfirmed) return;
 
     dispatch(deleteCategory(id))
-    .unwrap()
-    .then(() => {
-      Swal.fire("Eliminada", "La categoría fue eliminada correctamente ✅", "success");
-    })
-    .catch((err) => {
+    if(error) {
       Swal.fire("Error", error.message || "No se pudo eliminar la categoría.", "error");
-    });
+    } else {
+      Swal.fire("Eliminada", "La categoría fue eliminada correctamente ✅", "success");
+    }
 };
   
   return (

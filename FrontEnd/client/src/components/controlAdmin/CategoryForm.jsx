@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateCategory, createCategory  } from '../../redux/categoriesSlice.js';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 
 

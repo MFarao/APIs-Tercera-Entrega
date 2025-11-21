@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { createDiscount, updateDiscount } from "../../redux/discountSlice";
 
-const DiscountForm = ({ discount, onClose, onRefresh }) => {
+const DiscountForm = ({ discount, onClose }) => {
+  const { error } = useSelector((state) => state.discounts);
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     percentage: "",
     startDate: "",
@@ -63,11 +68,6 @@ const DiscountForm = ({ discount, onClose, onRefresh }) => {
 
     if (!confirm.isConfirmed) return;
 
-    const method = discount ? "PUT" : "POST";
-    const url = discount
-      ? `http://localhost:4002/discounts/${discount.id}`
-      : "http://localhost:4002/discounts";
-
     const payload = {
       ...formData,
       productsId: formData.productsId
@@ -80,33 +80,18 @@ const DiscountForm = ({ discount, onClose, onRefresh }) => {
         .filter((id) => !isNaN(id)),
     };
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Error al guardar descuento");
-
-      Swal.fire({
-        title: "Descuento guardado ✅",
-        icon: "success",
-      });
-
-      onRefresh();
-      onClose();
-    } catch (err) {
-      console.error("Error al guardar descuento:", err);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo guardar el descuento.",
-        icon: "error",
-      });
+    if (discount) {
+      await dispatch(updateDiscount({ body: { ...payload, id: discount.id } }));
+    } else {
+      await dispatch(createDiscount(payload));
     }
+    
+    if(error) {
+      Swal.fire({ title: "Error", text: "No se pudo guardar el descuento.", icon: "error", });
+    }
+    else{
+      Swal.fire({ title: "Descuento guardado ✅", icon: "success", });
+    }  
   };
 
   return (

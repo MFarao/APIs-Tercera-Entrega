@@ -1,38 +1,21 @@
 import { useEffect, useState } from "react";
 import DiscountForm from "../../components/controlAdmin/DiscountForm";
 import DiscountRow from "../../components/controlAdmin/DiscountRow";
+import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDiscounts, deactivateDiscount } from "../../redux/discountSlice";
  
 const ControlDescuento = () => {
-    const [discounts, setDiscounts] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [selectedDiscount, setSelectedDiscount] = useState(null);
-
-    const fetchDiscounts = () => { // creamos el fetch de las ordenes
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("Token no disponible");
-            return;
-        }
-
-        fetch("http://localhost:4002/discounts", {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
-            })
-            .then((data) => setDiscounts(data))
-            .catch((error) => console.error("Error fetching discounts:", error));
-        };
-
+    const dispatch = useDispatch();
+    const { items: discounts, error } = useSelector((state) => state.discounts);
 
     useEffect(() => {
-        fetchDiscounts();
-    }); // la metemos en el useffect para que recargue el componente 
+        if (!discounts.length){
+        dispatch(fetchDiscounts());}
+    }, [dispatch]);
+
 
     const handleEdit = (discount) => {
         setSelectedDiscount(discount);
@@ -40,26 +23,12 @@ const ControlDescuento = () => {
     };
 
     const handleToggle = async (id) => {
-        try {
-            const res = await fetch(`http://localhost:4002/discounts/${id}/deactivate`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            });
-
-            if (!res.ok) throw new Error("Error al cambiar estado");
-
-            const updated = await res.json();
-
-            
-            setDiscounts((prev) =>
-            prev.map((d) => (d.id === updated.id ? updated : d))
-        );
-  } catch (err) {
-    console.error("Error al activar/inactivar", err);
-  }
+        dispatch(deactivateDiscount({ id }))
+        if(error) {
+            Swal.fire("Error", error.message || "No se pudo actualizar el descuento.", "error");
+        } else {
+            Swal.fire("Actualizado", "El descuento fue actualizado correctamente ✅", "success");
+        }
 };
 
     
@@ -77,7 +46,6 @@ const ControlDescuento = () => {
                 <DiscountForm
                     discount={selectedDiscount}
                     onClose={() => setShowForm(false)}
-                    onRefresh={fetchDiscounts}
                 />
             )}
             <table className="panel-layout-table">
