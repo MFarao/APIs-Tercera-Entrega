@@ -5,20 +5,12 @@ import '../../estilos/Home.css';
 import NavBar from '../../components/NavBar.jsx';
 import ProductCarousel from '../../components/product/ProductCarousel.jsx';
 import HeroCarousel from '../../components/HeroCarousel.jsx';
-import { fetchCategories } from '../../redux/categoriesSlice.js';
-import { fetchProducts } from '../../redux/productSlice.js';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const products = useSelector((state) => state.products.items); // nos traemos los productos
   const categories = useSelector((state) => state.categories.items); // nos traemos las categorias
-
-  useEffect(()=>{
-  dispatch(fetchProducts()) // despachamos los fetch para productos y categorias
-  dispatch(fetchCategories())
-}, [dispatch])
 
   return (
     <div className="home-page">
@@ -29,7 +21,7 @@ const Home = () => {
       </div>
 
       <main className="main-content">
-        {categories.map((cat) => {
+        {categories.slice(0, 3).map((cat) => {
           const productosFiltrados = products
             .filter((p) => p.categoryId === cat.id && p.stock > 0)
             .slice(0, 10);

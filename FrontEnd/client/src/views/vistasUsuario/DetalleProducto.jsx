@@ -13,14 +13,23 @@ const DetalleProducto = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { userEnSesion } = useSelector((state) => state.user);
-  const { productoSeleccionado } = useSelector((state) => state.products);
+  const { items , productoSeleccionado } = useSelector((state) => state.products);
+  const { ultimaRuta } = useSelector((state) => state.UIs);
   const [agregado, setAgregado] = useState(false);
   const navigate = useNavigate();
 
 
     useEffect(() => {
-    dispatch(setProductoSeleccionado(id)); //  hacemos el fetch del producto segun el id 
-  }, [dispatch, id]);
+      if(productoSeleccionado?.id !== Number(id)){ // evitamos hacer el fetch si ya tenemos el producto seleccionado en el estado
+        dispatch(setProductoSeleccionado(id));} //  hacemos el fetch del producto segun el id 
+    }, [dispatch, id, items]);
+
+    useEffect(() => {
+      if(ultimaRuta !== location.pathname && !userEnSesion){  // Comparamos la ultima ruta guardada con la actual para no sobreescribirla innecesariamente
+        dispatch(setUltimaRuta(location.pathname));
+      }
+    }, [dispatch, userEnSesion, location.pathname]);
+
 
   useEffect(() => {
     if (productoSeleccionado) {
@@ -30,14 +39,7 @@ const DetalleProducto = () => {
 
   if (!productoSeleccionado) return <h3 className="cargando">Cargando producto...</h3>;
 
-  const enSesion = () => { // chequeamos si el usuario esta iniciado o no consultando el local storage que se arma cuando se renderiza al iniciar sesion
-    if (!userEnSesion) {
-      dispatch(setUltimaRuta(location.pathname)); //  si no esta iniciado guardamos la ruta para redirigirlo
-      return false;
-    } else {
-      return true;
-    }
-  };
+  const enSesion = () => !!userEnSesion;
 
   const handleAgregarClick = () => { 
     dispatch(sumarCarrito(productoSeleccionado));
@@ -64,7 +66,7 @@ const DetalleProducto = () => {
   return (
     <main className="detalle-container">
       <div className="galeria">
-        <img src={imagenPrincipal} alt={productoSeleccionado.name} className="imagen-principal" />
+        <img src={imagenPrincipal || null} alt={productoSeleccionado.name} className="imagen-principal" />
         <div className="miniaturas">
           {productoSeleccionado.imageUrls?.slice(0, 3).map((url, i) => (
             <img

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { updateCategory } from "./categoriesSlice";
  
 const URL = "http://localhost:4002/products";
  
@@ -101,7 +102,16 @@ const productSlice = createSlice({
       })
       .addCase(in_activateProduct.rejected, (state, action) => {
         state.error = action.payload;
-      });
+      })
+      //Redux Toolkit permite que un slice escuche acciones de otro thunk
+      .addCase(updateCategory.fulfilled, (state, action) => {
+        const updatedCategory = action.payload;
+        state.items = state.items.map((prod) =>
+          prod.categoryId === updatedCategory.id
+            ? { ...prod, categoryName: updatedCategory.description }
+            : prod
+        );
+      })
   },
 });
  

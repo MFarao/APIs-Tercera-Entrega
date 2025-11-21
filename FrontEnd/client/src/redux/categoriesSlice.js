@@ -22,12 +22,23 @@ export const updateCategory = createAsyncThunk("categories/updateCategory", asyn
 
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
-  async ( body, { getState }) => {
+  async ( description, { getState }) => {
     const token = getState().user.token;
-    const { data } = await axios.post(URL, body, {
+    const { data } = await axios.post(URL, description, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return data;
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "categories/deleteCategory",
+  async ( id, { getState }) => {
+    const token = getState().user.token;
+    await axios.delete(`${URL}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return id;
   }
 );
 
@@ -54,12 +65,28 @@ const categoriesSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.items = state.items.map((category) =>
-          category.id === action.payload.id ? action.payload : category
-      )})
-      .addCase(createCategory.fulfilled, (state, action) => {
-        state.items.push(action.payload);
+        const updatedCategory = action.payload;
+        // actualizar Categorias 
+        state.items = state.items.map(cat =>
+          cat.id === updatedCategory.id ? updatedCategory : cat
+        );
       })
+      .addCase(createCategory.fulfilled, (state, action) => {
+        state.items = [...state.items, action.payload];
+      })
+      .addCase(deleteCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        const deletedCategoryId = action.payload;
+        // Hace un filter para crear un nuevo array sin la categoria eliminada
+        state.items = state.items.filter(cat => cat.id !== deletedCategoryId);
+      })
+      .addCase(deleteCategory.rejected, (state) => {
+        state.loading = false;
+        state.error = "No se pudo eliminar la categoría.";
+      });
   },
 });
 

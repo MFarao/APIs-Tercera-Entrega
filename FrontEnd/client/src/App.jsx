@@ -25,9 +25,19 @@ import ControlDescuento from "./views/vistasAdmin/ControlDescuento.jsx";
 import ControlUsuarios from "./views/vistasAdmin/ControlUsuarios.jsx";
 
 
-import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchProducts } from "./redux/productSlice";
+import { fetchCategories } from "./redux/categoriesSlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProducts()); // despachamos los fetch para productos y categorias
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   return (
     <>
       <Navbar />

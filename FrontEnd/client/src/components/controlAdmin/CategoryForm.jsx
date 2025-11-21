@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { updateCategory } from '../../redux/categoriesSlice.js';
+import { updateCategory, createCategory  } from '../../redux/categoriesSlice.js';
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 
-const CategoryForm = ({ category, onClose, onRefresh }) => {
+const CategoryForm = ({ category, onClose }) => {
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
 
@@ -15,11 +16,24 @@ const CategoryForm = ({ category, onClose, onRefresh }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (category) {
-      dispatch(updateCategory({ id: category.id, description })); // despachamos el uopdate con la categoria con su descripcion
-
+      dispatch(updateCategory({ body: { id: category.id, description }})) // despachamos el uopdate con la categoria con su descripcion
+      .then(() => {
+        Swal.fire("Editada", "La categoría fue actualizada correctamente ✅", "success");
+        onClose();     // cerrar modal
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message || "No se pudo actualizar la categoría.", "error");
+      });
     }
     else{
-
+      dispatch(createCategory({ description }))
+      .then(() => {
+        Swal.fire("Agregada", "La categoría fue creada correctamente ✅", "success");
+        onClose();
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message || "No se pudo crear la categoría.", "error");
+      });
     }
   }
 

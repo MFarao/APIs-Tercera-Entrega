@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CategoryRow from "../../components/controlAdmin/CategoryRow";
 import CategoryForm from "../../components/controlAdmin/CategoryForm";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCategory  } from '../../redux/categoriesSlice.js';
 
 
 const ControlCategoria = () => {
   const [showForm, setShowForm] = useState(false);
-  const categories = useSelector((state) => state.categories.items); // nos traemos las categorias
+  const { items: categories, error} = useSelector((state) => state.categories); // nos traemos las categorias
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const dispatch = useDispatch();
 
   const handleEdit = async (body) => {
     setSelectedCategory(body);
@@ -27,20 +29,14 @@ const handleDelete = async (id) => {
 
   if (!confirm.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:4002/categories/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+    dispatch(deleteCategory(id))
+    .unwrap()
+    .then(() => {
+      Swal.fire("Eliminada", "La categoría fue eliminada correctamente ✅", "success");
+    })
+    .catch((err) => {
+      Swal.fire("Error", error.message || "No se pudo eliminar la categoría.", "error");
     });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`Error ${res.status}: ${errorText}`);
-    }
-
-    Swal.fire("Eliminada", "La categoría fue eliminada correctamente.", "success");
 };
   
   return (
@@ -57,7 +53,6 @@ const handleDelete = async (id) => {
         <CategoryForm
           category={selectedCategory}
           onClose={() => setShowForm(false)}
-          onRefresh={categories}
         />
       )}
 

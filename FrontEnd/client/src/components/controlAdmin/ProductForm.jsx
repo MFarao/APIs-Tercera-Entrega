@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { createProduct, updateProduct } from "../../redux/productSlice";
 
-const ProductForm = ({ product, onClose, onRefresh }) => {
+const ProductForm = ({ product, onClose }) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -58,31 +58,28 @@ const ProductForm = ({ product, onClose, onRefresh }) => {
     }
 
 
-    try {
-      const result = product
-        ? await dispatch(updateProduct({ body, idProducto: product.id }))
-        : await dispatch(createProduct(body));
+    const action = product
+    ? updateProduct({ body, idProducto: product.id })
+    : createProduct(body);
 
-      if (result.type.includes("rejected")) throw new Error(result.payload);
-
-
+  dispatch(action)
+    .then(() => {
       Swal.fire({
         title: "Producto cargado ✅",
         text: "El producto fue guardado correctamente.",
         icon: "success",
       });
-
-      onRefresh();
       onClose();
-    } catch (err) {
+    })
+    .catch((error) => {
       Swal.fire({
         title: "Error",
-        text: err.message || "No se pudo cargar el producto.",
+        text: error || "No se pudo cargar el producto.",
         icon: "error",
       });
-      console.error("Error al guardar producto:", err);
-    }
-  };
+    });
+};
+
 
   useEffect(() => {
     if (product) {

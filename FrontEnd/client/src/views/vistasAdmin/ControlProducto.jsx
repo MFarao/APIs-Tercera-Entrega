@@ -19,10 +19,6 @@ const ControlProducto = () => {
   const handleToggleActivo = async (id) => {
     dispatch(in_activateProduct(id));
   };
-
-  const handleRefresh = () => { 
-    dispatch(fetchProducts());
-  };
   
   return (
     <div className="panel-layout-container">
@@ -38,7 +34,6 @@ const ControlProducto = () => {
         <ProductForm
           product={selectedProduct}
           onClose={() => setShowForm(false)}
-          onRefresh={handleRefresh}
         />
       )}
 
