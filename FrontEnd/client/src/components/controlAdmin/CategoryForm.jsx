@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
+import { updateCategory } from '../../redux/categoriesSlice.js';
+import { useDispatch, useSelector } from "react-redux";
+
 
 const CategoryForm = ({ category, onClose, onRefresh }) => {
   const [description, setDescription] = useState("");
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     if (category) setDescription(category.description);
@@ -9,32 +14,19 @@ const CategoryForm = ({ category, onClose, onRefresh }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    const user = JSON.parse(localStorage.getItem("user"))
-    const method = category ? "PUT" : "POST";
-    const url = category
-      ? `http://localhost:4002/categories/${category.id}`
-      : "http://localhost:4002/categories";
+    if (category) {
+      dispatch(updateCategory({ id: category.id, description })); // despachamos el uopdate con la categoria con su descripcion
 
-    fetch(url, {
-      method,
-      headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      body: JSON.stringify({ description }),
-    })
-      .then(() => {
-        onRefresh();
-        onClose();
-      })
-      .catch((err) => console.error("Error al guardar categoría:", err));
-  };
+    }
+    else{
+
+    }
+  }
 
   return (
     <div className="form-overlay">
       <form className="panel-layout-form" onSubmit={handleSubmit}>
-        <h3>{category ? "Edit Category" : "Add Category"}</h3>
+        <h3>{category ? "Editar Categoria" : "Agregar Categoria"}</h3>
         <input
           type="text"
           placeholder="Description"

@@ -35,8 +35,7 @@ useEffect(() => { // cuando detecta algun cambio en el userensesion se ejecuta
       return;
     }
 
-    const destino = ultimaRuta || 
-      (location.state?.from === "/registro" ? "/productos" : location.state?.from || "/productos");
+    const destino = ultimaRuta || "/"; // si no viene de detalle producto lo mandamos al home
 
     navigate(destino);
     dispatch(setUltimaRuta(null)); // limpiamos la ultima ruta guardada

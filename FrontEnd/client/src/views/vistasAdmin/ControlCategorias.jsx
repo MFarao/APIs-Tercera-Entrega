@@ -2,29 +2,18 @@ import { useEffect, useState } from "react";
 import CategoryRow from "../../components/controlAdmin/CategoryRow";
 import CategoryForm from "../../components/controlAdmin/CategoryForm";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+
 
 const ControlCategoria = () => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const categories = useSelector((state) => state.categories.items); // nos traemos las categorias
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const fetchCategories = () => {
-    fetch("http://localhost:4002/categories")
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error("Error al cargar categorías:", err));
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const handleEdit = (category) => {
-    setSelectedCategory(category);
+  const handleEdit = async (body) => {
+    setSelectedCategory(body);
     setShowForm(true);
   };
-  
-  
 
 const handleDelete = async (id) => {
   const confirm = await Swal.fire({
@@ -38,7 +27,6 @@ const handleDelete = async (id) => {
 
   if (!confirm.isConfirmed) return;
 
-  try {
     const res = await fetch(`http://localhost:4002/categories/${id}`, {
       method: "DELETE",
       headers: {
@@ -53,13 +41,7 @@ const handleDelete = async (id) => {
     }
 
     Swal.fire("Eliminada", "La categoría fue eliminada correctamente.", "success");
-    fetchCategories();
-  } catch (err) {
-    Swal.fire("Error", "No se pudo eliminar la categoría. Porque tiene productos asociados", "error");
-    console.error("Error al eliminar categoría:", err);
-  }
 };
-
   
   return (
     <div className="panel-layout-container">
@@ -75,7 +57,7 @@ const handleDelete = async (id) => {
         <CategoryForm
           category={selectedCategory}
           onClose={() => setShowForm(false)}
-          onRefresh={fetchCategories}
+          onRefresh={categories}
         />
       )}
 

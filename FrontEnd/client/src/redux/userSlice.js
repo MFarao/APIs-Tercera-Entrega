@@ -7,7 +7,6 @@ const USERS_URL = "http://localhost:4002/users"
 export const authenticateUser = createAsyncThunk(
   "auth/authenticateUser", 
   async (formData, {rejectWithValue}) => { // pedimos el bearer al back con los datos y luego pedimos los datos del usuario con ese token
-    try{
       const response = await axios.post(`${AUTH_URL}/authenticate`, formData);
       
       const token = response.data.access_token || response.data.token || response.data.tokenJwt;
@@ -18,17 +17,13 @@ export const authenticateUser = createAsyncThunk(
       });
 
       return {token: token, userEnSesion: responseUser.data};
-    }
-    catch (err){
-      return rejectWithValue(err.message || "Correo o contraseña incorrectos");
-    }
   }
 );
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, {rejectWithValue}) => {
-    try {
+   
       const response = await axios.post(`${AUTH_URL}/register`, formData); // registramos el usaurio
 
       const token = response.data.access_token || response.data.token || response.data.tokenJwt; // agarramos el token para agarrarlo
@@ -40,16 +35,12 @@ export const registerUser = createAsyncThunk(
       });
 
       return {token: token, userEnSesion: responseUser.data};
-
-    }catch (err) {
-      return rejectWithValue(err.message || "No se pudo registrar el usuario");
-    }
 })
 
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
-  async (body, { getState, rejectWithValue }) => { // inyecyamos get state para poder acceder al token
-    try {
+  async (body, { getState }) => { // inyecyamos get state para poder acceder al token
+    
       const state = getState();
       const token = state.user.token; // sacamos el token del estado global
       const idUser = getState().user.userEnSesion.id;
@@ -62,9 +53,6 @@ export const updateUser = createAsyncThunk(
       }); //  hacemos un PUT con los datos y el token
 
       return response.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "No se pudo actualizar el usuario");
-    }
   }
 );
 
@@ -96,6 +84,10 @@ const userSlice = createSlice({
       })
       .addCase(authenticateUser.rejected, (state, action) => {
         state.error = action.payload || "Error en la autenticación";
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.token = action.payload.token;

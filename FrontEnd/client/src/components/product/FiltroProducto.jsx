@@ -3,7 +3,6 @@ import "../../estilos/FiltroProducto.css";
 import logo from "../../assets/logo.png";
 import Swal from "sweetalert2";
 import { setFiltrosAplicar } from "../../redux/productSlice";
-import { fetchCategories } from "../../redux/categoriesSlice";
 import {useDispatch, useSelector} from 'react-redux'
 
 
@@ -14,10 +13,6 @@ const FiltroProducto = () => {
 
 const dispatch = useDispatch()
 const {items} = useSelector((state) => state.categories);
-
-  useEffect(()=>{
-  dispatch(fetchCategories())
-}, [dispatch])
 
   const filtroApasar = () => { 
 

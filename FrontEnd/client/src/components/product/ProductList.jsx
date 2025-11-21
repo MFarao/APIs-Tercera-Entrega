@@ -1,20 +1,12 @@
 import { useEffect, } from "react";
-import {useDispatch, useSelector} from 'react-redux'
+import { useSelector} from 'react-redux'
 import ProductComponent from "./ProductComponent";
 import "../../estilos/Product.css";
-import { fetchProducts } from "../../redux/productSlice";
 
 
 const ProductList = ({sale}) => {
-
-const dispatch = useDispatch()
 const {items, filtrosAplicar, busqueda} = useSelector((state) => state.products)
-
-useEffect(()=>{
-  dispatch(fetchProducts())
-}, [dispatch])
-
-
+console.log("Productos en el store:", items);
   const aplicarFiltros = () => {
 
     if (filtrosAplicar === null) return items; //si no hay filtros en el estado global, devuelve todos los productos

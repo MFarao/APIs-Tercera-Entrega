@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
+ 
 const URL = "http://localhost:4002/products";
-
+ 
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async () => {
   const { data } = await axios.get(URL);
   return data;
 });
-
+ 
 export const createProduct = createAsyncThunk(
   "products/createProduct",
-  async ( body, { getState, rejectWithValue }) => { 
+  async ( body, { getState }) => {
     const token = getState().user.token;
     const { data } = await axios.post(URL, body, {
       headers: { Authorization: `Bearer ${token}` },
@@ -18,31 +18,31 @@ export const createProduct = createAsyncThunk(
     return data;
   }
 );
-
+ 
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async ( {body, idProducto}, { getState }) => { // inyecyamos get state para poder acceder al token
       const token = getState().user.token; // sacamos el token del estado global
-      const response = await axios.put(`${URL}/${idProducto}`, body, {
+      const { data } = await axios.put(`${URL}/${idProducto}`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }); //hacemos un PUT con los datos y el token
-      return response.data; // Devolvemos el producto actualizado
+      return data; // Devolvemos el producto actualizado
   }
 );  
-
+ 
 export const in_activateProduct = createAsyncThunk(
   "products/in_activateProduct",
-  async ( idProducto, { getState }) => { 
+  async ( idProducto, { getState }) => {
       const token = getState().user.token; // sacamos el token del estado global
-      const response = await axios.put(`${URL}/${idProducto}/in_activar`, {}, {
+      const { data } = await axios.put(`${URL}/${idProducto}/in_activar`, {}, {
         headers: { Authorization: `Bearer ${token}` },
-      }); 
-      return response.data; // Devolvemos el producto actualizado
+      });
+      return data; // Devolvemos el producto actualizado
   }
 );
-
+ 
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -104,7 +104,7 @@ const productSlice = createSlice({
       });
   },
 });
-
+ 
 export const { setFiltrosAplicar } = productSlice.actions;
 export const { setBusqueda } = productSlice.actions;
 export const { setProductoSeleccionado } = productSlice.actions;

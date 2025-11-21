@@ -5,32 +5,20 @@ import '../../estilos/Home.css';
 import NavBar from '../../components/NavBar.jsx';
 import ProductCarousel from '../../components/product/ProductCarousel.jsx';
 import HeroCarousel from '../../components/HeroCarousel.jsx';
+import { fetchCategories } from '../../redux/categoriesSlice.js';
+import { fetchProducts } from '../../redux/productSlice.js';
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.items); // nos traemos los productos
+  const categories = useSelector((state) => state.categories.items); // nos traemos las categorias
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [catRes, prodRes] = await Promise.all([
-          fetch('http://localhost:4002/categories'),
-          fetch('http://localhost:4002/products'),
-        ]);
-
-        const catData = await catRes.json();
-        const prodData = await prodRes.json();
-
-        setCategories(catData.slice(0, 3));
-        setProducts(prodData);
-      } catch (err) {
-        console.error('Error al cargar datos:', err);
-      }
-    };
-
-    fetchData();
-  }, []);
+  useEffect(()=>{
+  dispatch(fetchProducts()) // despachamos los fetch para productos y categorias
+  dispatch(fetchCategories())
+}, [dispatch])
 
   return (
     <div className="home-page">

@@ -12,9 +12,8 @@ export const fetchOrders = createAsyncThunk(
 
 export const fetchOrdersUsuario = createAsyncThunk(
     "orders/fetchOrdersUsuario",
-    async (usuarioId, { getState, rejectWithValue }) => {
-        const { user } = getState();
-        const token = user.token; // sacamos el token del estado global
+    async (usuarioId, { getState }) => {
+        const token = getState().user.token; // sacamos el token del estado global
         
         const { data } = await axios.get(`${URL}/user/${usuarioId}`, {  
             headers: { Authorization: `Bearer ${token}` },
