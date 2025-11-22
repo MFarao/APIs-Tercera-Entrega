@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService{
         Optional<Order> order = orderRepository.findById(orderId);
         OrderStatus estadoReq = OrderStatus.valueOf(orderStatusRequest.getStatus().toUpperCase().trim());
         boolean valido = false;
-        if(!order.isPresent()){
+        if(order.isEmpty()){
             throw new OrderNotExistsException();
         }
         Order orden = order.get();
