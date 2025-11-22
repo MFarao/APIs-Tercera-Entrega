@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.service.Order;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import com.uade.tpo.demo.service.Product.ProductServiceImpl;
@@ -11,8 +12,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.controllers.order.OrderDTO;
+import com.uade.tpo.demo.controllers.order.OrderRequest;
 import com.uade.tpo.demo.controllers.order.OrderStatusRequest;
 import com.uade.tpo.demo.controllers.order.OrderUpdateRequest;
+import com.uade.tpo.demo.controllers.order.OrdersRequest;
 import com.uade.tpo.demo.controllers.product.ProductController;
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.entity.Order;
@@ -143,5 +146,17 @@ public class OrderServiceImpl implements OrderService{
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+   @Override // nuevo metodo para crear multiples ordenes
+    public List<OrderDTO> createOrders(OrdersRequest ordersRequest) throws UserNotExistsException, ProductNotExistsException, CantidadExedenteException {
+        List<OrderDTO> createdOrders = new ArrayList<>();
+        for (OrderRequest orderReq : ordersRequest.getOrdenes()) { 
+            // para todas las ordenes las creamos en la BD y las agregamos a la lista q va ir al front
+            
+            Order order = createOrder(orderReq.getIdUser(), orderReq.getIdProducto(),orderReq.getCantidadProducto(), orderReq.getEnvio_a());
+            createdOrders.add(cargarOrderDTO(order));
+        }
+        return createdOrders;
     }
 }

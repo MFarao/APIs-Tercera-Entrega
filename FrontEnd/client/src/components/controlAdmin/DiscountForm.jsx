@@ -70,6 +70,7 @@ const DiscountForm = ({ discount, onClose }) => {
 
     const payload = {
       ...formData,
+      percentage: parseFloat(formData.percentage),
       productsId: formData.productsId
         .split(",")
         .map((id) => parseInt(id.trim()))
@@ -81,9 +82,9 @@ const DiscountForm = ({ discount, onClose }) => {
     };
 
     if (discount) {
-      await dispatch(updateDiscount({ body: { ...payload, id: discount.id } }));
+      await dispatch(updateDiscount({ body: { ...payload, id: discount.id } })).unwrap();
     } else {
-      await dispatch(createDiscount(payload));
+      await dispatch(createDiscount(payload)).unwrap();
     }
     
     if(error) {
@@ -92,6 +93,7 @@ const DiscountForm = ({ discount, onClose }) => {
     else{
       Swal.fire({ title: "Descuento guardado ✅", icon: "success", });
     }  
+    onClose();
   };
 
   return (

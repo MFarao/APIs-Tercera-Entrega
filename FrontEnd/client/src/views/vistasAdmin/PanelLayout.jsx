@@ -4,6 +4,7 @@ import "../../estilos/PanelDeControl.css";
 import "../../estilos/PanelLayout.css";
 
 const PanelLayout = () => {
+
   return (
     <div className="panel-layout">
       <PanelDeControl />

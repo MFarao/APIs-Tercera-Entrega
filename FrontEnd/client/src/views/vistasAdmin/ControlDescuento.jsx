@@ -3,19 +3,13 @@ import DiscountForm from "../../components/controlAdmin/DiscountForm";
 import DiscountRow from "../../components/controlAdmin/DiscountRow";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDiscounts, deactivateDiscount } from "../../redux/discountSlice";
- 
+import { deactivateDiscount } from "../../redux/discountSlice";
+
 const ControlDescuento = () => {
     const [showForm, setShowForm] = useState(false);
     const [selectedDiscount, setSelectedDiscount] = useState(null);
     const dispatch = useDispatch();
     const { items: discounts, error } = useSelector((state) => state.discounts);
-
-    useEffect(() => {
-        if (!discounts.length){
-        dispatch(fetchDiscounts());}
-    }, [dispatch]);
-
 
     const handleEdit = (discount) => {
         setSelectedDiscount(discount);
@@ -29,8 +23,7 @@ const ControlDescuento = () => {
         } else {
             Swal.fire("Actualizado", "El descuento fue actualizado correctamente ✅", "success");
         }
-};
-
+    };
     
     return(
         <div className="panel-layout-container">

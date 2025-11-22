@@ -124,12 +124,12 @@ const Navbar = () => {
           <input type="text" placeholder="Buscar..." className="search-input" onChange={(e) => dispatch(setBusqueda(e.target.value))}/> {/* on change mandamos lo del iinput al estado global para ser usado por product list o sale */}
         </form>
       )}
-
       <div className="navbar-auth">
+        {userEnSesion?.role === "USER" && (
         <button to="/checkout" className="navbar-cart" onClick = {handleCarritoClick}> 
           <img src={carritoIcon} alt="Carrito" className="cart-icon" />
           <span className="cart-text">Carrito</span>
-        </button>
+        </button> )}
         {userEnSesion ? (
           <>
             {/* uso firstname porque en el backend usabas firstname/lastname */}

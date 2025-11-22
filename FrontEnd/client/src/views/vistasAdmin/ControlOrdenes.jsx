@@ -1,33 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useSelector, useDispatch } from "react-redux";
+import { updateStatus } from "../../redux/orderSlice";
 
 const ControlOdrenes = () => {
-  const [ordenes, setOrdenes] = useState([]);
-  const [error, setError] = useState("");
-
-  const token = localStorage.getItem("token");
-
-  const fetchOrdenes = async () => { // hacemos el fetch de las ordenes
-      try {
-        const res = await fetch(`http://localhost:4002/order`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        });
-
-        if (!res.ok) throw new Error("No se pudieron cargar las órdenes");
-
-        const data = await res.json();
-
-        setOrdenes(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-  useEffect(() => { // lo usamos en el effect para que actualice el componente con los datos
-    fetchOrdenes();
-  });
+  const {orders, error} = useSelector((state) => state.order);
+  const dispatch = useDispatch();
 
   const handleProxFase = (orden) => {
     // asignamos la siguiente fase
@@ -53,20 +31,10 @@ const ControlOdrenes = () => {
     });
     if (!confirm.isConfirmed) return
 
-    try {
-        const res = await fetch(`http://localhost:4002/order/${orden.id}/status`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
-            body: JSON.stringify({status: proxFase}) // mandamos la request
-            }).then(() => fetchOrdenes())
-        if (!res.ok) throw new Error("No se pudo avanzar la orden");
-        
-    } catch (err) {
-        console.error("Error al avanzar orden:", err);
-        // feedback al usuario (opcional)
-    }
-    };
+    const body = {status: proxFase}; // creamos el body con la proxima fase
 
+    dispatch(updateStatus({body, idOrder: orden.id})); // pasamos la proxima fase y el id de la orden
+    };
 
   return (
     <div className="panel-layout-container">
@@ -86,7 +54,7 @@ const ControlOdrenes = () => {
           </tr>
         </thead>
         <tbody>
-            {ordenes.map((orden) => ( // para cada orden se crea un componente
+            {orders.map((orden) => ( // para cada orden se crea un componente
                 <tr key={orden.id}>
                 <td>{orden.idUser}</td>
                 <td>{orden.nombreProducto}</td>

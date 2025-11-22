@@ -26,17 +26,30 @@ import ControlUsuarios from "./views/vistasAdmin/ControlUsuarios.jsx";
 
 
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "./redux/productSlice";
 import { fetchCategories } from "./redux/categoriesSlice";
+import { fetchUsers } from "./redux/userSlice";
+import { fetchOrders } from "./redux/orderSlice";
+import { fetchDiscounts } from "./redux/discountSlice";
 
 function App() {
   const dispatch = useDispatch();
+  const userEnSesion = useSelector((state) => state.user.userEnSesion)
 
   useEffect(() => {
     dispatch(fetchProducts()); // despachamos los fetch para productos y categorias
-    dispatch(fetchCategories());
+    dispatch(fetchCategories());    
   }, [dispatch]);
+
+  //Cuando el userEnSesion sea un ADMIN, se hara fetch
+  useEffect(() => {
+    if(userEnSesion?.role === "ADMIN") {
+      dispatch(fetchDiscounts())
+      dispatch(fetchUsers())
+      dispatch(fetchOrders())
+      }
+  }, [dispatch, userEnSesion]);
 
   return (
     <>

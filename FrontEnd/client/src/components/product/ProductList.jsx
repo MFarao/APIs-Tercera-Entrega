@@ -6,7 +6,6 @@ import "../../estilos/Product.css";
 
 const ProductList = ({sale}) => {
 const {items, filtrosAplicar, busqueda} = useSelector((state) => state.products)
-console.log("Productos en el store:", items);
   const aplicarFiltros = () => {
 
     if (filtrosAplicar === null) return items; //si no hay filtros en el estado global, devuelve todos los productos

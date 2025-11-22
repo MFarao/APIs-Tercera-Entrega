@@ -12,7 +12,7 @@ const CheckoutFormulario = () => {
         <p>Rellene sus datos:</p>
         <form className="forms">
           <input type="text" placeholder="Ingrese su direccion " onChange={(e) => dispatch(setEnvio(e.target.value))} />
-          <button type="button" className={`btn-mercadopago ${conectado ? "active" : ""}`} onClick={() => setConectado()}>
+          <button type="button" className={`btn-mercadopago ${conectado ? "active" : ""}`} onClick={() => dispatch(setConectado(true))}>
             <img className="mpLogo" src={mercadoPagoLogo} />
             Conectar con MercadoPago
           </button>

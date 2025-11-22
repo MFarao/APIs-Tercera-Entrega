@@ -16,7 +16,7 @@ const uiSlice = createSlice({
     state.envio = action.payload;
     },
     setConectado: (state, action) => { // pasamos conectado a true
-    state.conectado = true;
+    state.conectado = action.payload;
     },
   }
 });

@@ -84,6 +84,13 @@ public class OrderController {
         return ResponseEntity.created(URI.create("/order/" + result.getId())).body(result);
     }
 
+    @PostMapping("/checkout") // nuevo enpoint para crear multiples ordenes
+    public ResponseEntity<List<OrderDTO>> createOrders(@RequestBody OrdersRequest ordersRequest) throws UserNotExistsException, ProductNotExistsException, CantidadExedenteException {
+        List<OrderDTO> result = orderService.createOrders(ordersRequest);
+        return ResponseEntity.ok(result); // devuelve la lista de órdenes creadas
+    }
+
+
     @PutMapping("/{orderId}/status")
     public ResponseEntity<OrderDTO> updateStatus(@PathVariable Long orderId,@RequestBody OrderStatusRequest orderStatusRequest) throws OrderNotExistsException, CambioInvalidoException {
         Order updated = orderService.updateStatus(orderId, orderStatusRequest);

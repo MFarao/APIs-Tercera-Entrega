@@ -1,8 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { updateCategory } from "./categoriesSlice";
+import { updateDiscount, createDiscount, deactivateDiscount } from "./discountSlice";
  
 const URL = "http://localhost:4002/products";
+
+const calcPrecioDescuento = (precio, porcentaje) => {
+  if (porcentaje == null) return null;
+  // porcentaje viene como entero (ej: 50) → 50%
+  const pd = precio * (1 - porcentaje / 100);
+  return Math.round(pd * 100) / 100;
+};
+
  
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async () => {
   const { data } = await axios.get(URL);
@@ -110,6 +119,42 @@ const productSlice = createSlice({
           prod.categoryId === updatedCategory.id
             ? { ...prod, categoryName: updatedCategory.description }
             : prod
+        );
+      })
+      .addCase(createDiscount.fulfilled, (state, action) => {
+        const discount = action.payload;
+        state.items = state.items.map((p) =>
+          p.discount?.id === discount.id ||
+          (Array.isArray(discount.productsId) && discount.productsId.includes(p.id)) || 
+          (Array.isArray(discount.categoriesId) && discount.categoriesId.includes(p.categoryId))
+            ? {
+                ...p,
+                discount,
+                priceDescuento: calcPrecioDescuento(p.precio ?? p.price, discount.percentage),
+              }
+            : p
+        );
+      })
+      .addCase(updateDiscount.fulfilled, (state, action) => {
+        const discount = action.payload;
+        state.items = state.items.map((p) =>
+          p.discount?.id === discount.id ||
+          (Array.isArray(discount.productsId) && discount.productsId.includes(p.id)) ||
+          (Array.isArray(discount.categoriesId) && discount.categoriesId.includes(p.categoryId))
+            ? {
+                ...p,
+                discount,
+                priceDescuento: calcPrecioDescuento(p.precio ?? p.price, discount.percentage),
+              }
+            : p
+        );
+      })
+      .addCase(deactivateDiscount.fulfilled, (state, action) => {
+        const discount = action.payload;
+        state.items = state.items.map((p) =>
+          p.discount?.id === discount.id
+            ? { ...p, discount: null, priceDescuento: null }
+            : p
         );
       })
   },

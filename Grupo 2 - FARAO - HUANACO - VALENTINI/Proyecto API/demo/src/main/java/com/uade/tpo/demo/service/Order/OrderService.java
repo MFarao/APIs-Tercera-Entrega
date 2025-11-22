@@ -15,6 +15,7 @@ import com.uade.tpo.demo.exceptions.CantidadExedenteException;
 import com.uade.tpo.demo.exceptions.OrderNotExistsException;
 import com.uade.tpo.demo.exceptions.ProductNotExistsException;
 import com.uade.tpo.demo.exceptions.UserNotExistsException;
+import com.uade.tpo.demo.controllers.order.OrdersRequest;
 
 public interface OrderService {
     public Page<Order> getOrder(PageRequest pageRequest);
@@ -28,4 +29,6 @@ public interface OrderService {
     public OrderDTO cargarOrderDTO(Order order);
 
     public List<OrderDTO> getOrdersByUserId(Long userId) throws UserNotExistsException;
+
+    public List<OrderDTO> createOrders(OrdersRequest ordersRequest) throws UserNotExistsException, ProductNotExistsException, CantidadExedenteException;
 }

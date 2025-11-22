@@ -1,11 +1,48 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { createOrders } from "../../redux/orderSlice";
+import Swal from "sweetalert2";
 
-const CheckoutResumen = ({createOrder }) => {
+const CheckoutResumen = () => {
   const {total} = useSelector((state) => state.cart);
   const {token} = useSelector((state) => state.user);
   const {conectado, envio} = useSelector((state) => state.UIs);
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const {items} = useSelector((state) => state.cart); // nos traemos los productos del carrito 
+  const {userEnSesion} = useSelector((state) => state.user); // nos traemos los productos del carrito 
+
+  const createOrder = async () => {
+    try {
+      const ordenesACrear = items.map((p) => ({
+        idUser: userEnSesion.id,
+        idProducto: p.id,
+        cantidadProducto: p.cantidad,
+        envio_a: envio,
+      }));
+
+      await dispatch(createOrders({ ordenes: ordenesACrear })).unwrap();
+
+      Swal.fire({
+        title: "Orden creada ✅",
+        text: "Tu pedido fue procesado correctamente.",
+        icon: "success",
+        confirmButtonText: "Ver mis órdenes",
+      }).then((result) => {
+        if (result.isConfirmed) navigate("/misordenes");
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo crear la orden.",
+        icon: "error",
+      });
+    }
+  };
 
   return (
   <div className="checkout-summary">

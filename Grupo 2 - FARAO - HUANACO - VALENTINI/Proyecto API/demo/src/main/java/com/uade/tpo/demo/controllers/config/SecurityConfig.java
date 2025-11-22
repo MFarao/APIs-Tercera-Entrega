@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/order").hasAuthority(Role.ADMIN.name()) // TODAS LAS ORDENES SOLO LAS PUEDEN VER LOS ADMINS
                                 .requestMatchers(HttpMethod.GET, "/order/**").hasAnyAuthority(Role.USER.name(),Role.ADMIN.name()) // LAS ORDENES LOS PUEDEN VER TODOS
                                 .requestMatchers(HttpMethod.POST, "/order").hasAnyAuthority(Role.USER.name(),Role.ADMIN.name()) // LAS ORDENES LOS PUEDEN VER TODOS
+                                .requestMatchers(HttpMethod.POST, "/order/checkout").hasAnyAuthority(Role.USER.name()) // LAS ORDENES LOS PUEDEN VER TODOS
                                 .requestMatchers(HttpMethod.PUT, "/order/**").hasAuthority(Role.ADMIN.name()) // LAS ORDENES PUEDEN SER PASADAS DE ESTADO UNICAMENTE POR ADMIN
 
                                 .requestMatchers(HttpMethod.GET, "/categories", "/categories/**").permitAll()

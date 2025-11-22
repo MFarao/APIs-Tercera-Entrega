@@ -12,13 +12,12 @@ export const fetchDiscounts = createAsyncThunk("discounts/fetchDiscounts", async
   return data;
 });
 
-
 export const updateDiscount = createAsyncThunk("discounts/updateDiscount", async ( {body}, { getState }) => { // inyecyamos get state para poder acceder al token
       const token = getState().user.token; // sacamos el token del estado global   
         const { data } = await axios.put(`${URL}/${body.id}`, body, {
         headers: {Authorization: `Bearer ${token}`,},
         }); //hacemos un PUT con los datos y el token
-        return data; // Devolvemos el producto actualizado
+        return { ...data, productsId: body.productsId, categoriesId: body.categoriesId }; // Devolvemos el producto actualizado
     }
 );  
 
@@ -29,7 +28,7 @@ export const createDiscount = createAsyncThunk(
     const { data } = await axios.post(URL, discountData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return data;
+    return { ...data, productsId: discountData.productsId, categoriesId: discountData.categoriesId };
   }
 );
 
@@ -63,14 +62,15 @@ const discountsSlice = createSlice({
             state.items = action.payload;
         })
         .addCase(updateDiscount.fulfilled, (state, action) => {
-            const updatedDiscount = action.payload;
-            // actualizar Descuentos 
+            const updatedDiscount = action.payload; 
             state.items = state.items.map(discount =>
                 discount.id === updatedDiscount.id ? updatedDiscount : discount
             );
         })
         .addCase(createDiscount.fulfilled, (state, action) => {
-            state.items = [...state.items, action.payload];
+          const newDiscount = { ...action.payload };
+          newDiscount.percentage = Math.round(newDiscount.percentage * 100);
+          state.items = [...state.items, newDiscount];
         })
         .addCase(deactivateDiscount.fulfilled, (state, action) => {
             const updatedDiscount = action.payload;
