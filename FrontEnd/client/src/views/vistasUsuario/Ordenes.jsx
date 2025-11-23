@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../../estilos/Ordenes.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrdersUsuario, setFiltrosAplicar } from "../../redux/orderSlice";
+import { setFiltrosAplicar } from "../../redux/orderSlice";
 
 const Ordenes = () => {
   const dispatch = useDispatch();
   const { orders, error, filtrosAplicar, loading } = useSelector((state) => state.order);
-  const { userEnSesion, token } = useSelector((state) => state.user);
-
   const [filtroEstado, setFiltroEstado] = useState("TODOS");
-
-  useEffect(() => {
-    if (userEnSesion?.id && token) {
-      dispatch(fetchOrdersUsuario(userEnSesion.id));
-    }
-  }, [dispatch, userEnSesion, token]);
 
   useEffect(() => {
     dispatch(setFiltrosAplicar({ estado: filtroEstado }));

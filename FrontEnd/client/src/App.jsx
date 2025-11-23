@@ -24,13 +24,12 @@ import ControlOrdenes from "./views/vistasAdmin/ControlOrdenes.jsx";
 import ControlDescuento from "./views/vistasAdmin/ControlDescuento.jsx";
 import ControlUsuarios from "./views/vistasAdmin/ControlUsuarios.jsx";
 
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "./redux/productSlice";
 import { fetchCategories } from "./redux/categoriesSlice";
 import { fetchUsers } from "./redux/userSlice";
-import { fetchOrders } from "./redux/orderSlice";
+import { fetchOrders, fetchOrdersUsuario } from "./redux/orderSlice";
 import { fetchDiscounts } from "./redux/discountSlice";
 
 function App() {
@@ -48,6 +47,13 @@ function App() {
       dispatch(fetchDiscounts())
       dispatch(fetchUsers())
       dispatch(fetchOrders())
+      }
+  }, [dispatch, userEnSesion]);
+
+  //Cuando el userEnSesion sea un USER, se hara fetch
+  useEffect(() => {
+    if(userEnSesion?.role === "USER") {
+      dispatch(fetchOrdersUsuario(userEnSesion.id))
       }
   }, [dispatch, userEnSesion]);
 
