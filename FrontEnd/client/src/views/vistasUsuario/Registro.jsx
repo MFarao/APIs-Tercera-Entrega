@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../../estilos/Auth.css";
 import {useDispatch, useSelector} from 'react-redux';
-import { registerUser } from "../../redux/userSlice";
+import { registerUser, fetchUserData } from "../../redux/userSlice";
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -22,13 +22,19 @@ const Registro = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData)).then((action) =>{
-      if (action.type === "auth/registerUser/rejected") return; // si hubo un error no hacemos nada
-        navigate("/inicio"); // lo mandamos a inicio para que haga el login
 
-    })
-
+    // 1. Registramos el usuario
+    dispatch(registerUser(formData)).then((action) => {
+      if (action.type === "auth/registerUser/rejected") return;
+      // 2. Si se registró bien, traemos sus datos
+      dispatch(fetchUserData()).then((userAction) => {
+        if (userAction.type === "user/fetchUserData/rejected") return;
+        // 3. Finalmente, navegamos al inicio
+        navigate("/inicio");
+      });
+    });
   };
+
 
   return (
     <div className="auth-container">

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import "../../estilos/Auth.css";
 import Swal from "sweetalert2";
 import {useDispatch, useSelector} from 'react-redux';
-import { authenticateUser } from "../../redux/userSlice";
+import { authenticateUser, fetchUserData  } from "../../redux/userSlice";
 import { setUltimaRuta } from "../../redux/uiSlice";
 
 const Inicio = () => {
@@ -20,7 +20,12 @@ const Inicio = () => {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  dispatch(authenticateUser(formData)); // despachamos el login con la data
+  // 1. Autenticamos y obtenemos token
+    dispatch(authenticateUser(formData)).then((action) => {
+      if (action.type === "auth/authenticateUser/rejected") return;
+      // 2. Con el token ya en el estado, traemos los datos del usuario
+      dispatch(fetchUserData());
+    });
 };
 
 useEffect(() => { // cuando detecta algun cambio en el userensesion se ejecuta
