@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import Swal from "sweetalert2";
 import { createProduct, updateProduct } from "../../redux/productSlice";
 
 const ProductForm = ({ product, onClose }) => {
   const dispatch = useDispatch();
+  const { items: categories } = useSelector((state) => state.categories);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,7 +43,7 @@ const ProductForm = ({ product, onClose }) => {
       name: formData.name,
       description: formData.description,
       price: formData.price,
-      categoryId: formData.categoryId === "" ? null : formData.categoryId,
+      categoryId: formData.categoryId === "" ? null : Number(formData.categoryId),
       stock: formData.stock,
     };
 
@@ -87,7 +88,7 @@ const ProductForm = ({ product, onClose }) => {
         name: product.name || "",
         description: product.description || "",
         price: product.price || 0,
-        categoryId: product.categoryId || "",
+        categoryId: product.categoryId ? String(product.categoryId) : "",
         imageUrls: Array.isArray(product.imageUrls)
           ? product.imageUrls.join(", ")
           : product.imageUrls || "",
@@ -136,13 +137,21 @@ const ProductForm = ({ product, onClose }) => {
           required
         />
 
-        <input
-          type="text"
+        <label>Categoría</label>
+        <select
           name="categoryId"
-          placeholder="ID Categoría (opcional)"
           value={formData.categoryId}
           onChange={handleChange}
-        />
+        >
+          <option value="">Sin categoría</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={String(cat.id)}>
+              {cat.description}
+            </option>
+          ))}
+        </select>
+
+
 
         <input
           type="text"

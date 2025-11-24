@@ -30,7 +30,7 @@ const ProductComponent = ({
 
         <div className="product-info">
           <h3 className="product-name">{name}</h3>
-          <p className="product-category">Categoría: {categoryName || categoryId}</p>
+          <p className="product-category">Categoría: {categoryName ?? categoryId ?? "Sin categoría"}</p>
           
           <div className="product-pricing">
 

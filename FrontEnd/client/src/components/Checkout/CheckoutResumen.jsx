@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrders } from "../../redux/orderSlice";
+import { vaciarCarrito } from "../../redux/cartSlice";
 import Swal from "sweetalert2";
 
 const CheckoutResumen = () => {
@@ -26,6 +27,8 @@ const CheckoutResumen = () => {
       }));
 
       await dispatch(createOrders({ ordenes: ordenesACrear })).unwrap();
+
+      dispatch(vaciarCarrito());
 
       Swal.fire({
         title: "Orden creada ✅",

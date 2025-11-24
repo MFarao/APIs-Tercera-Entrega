@@ -103,7 +103,7 @@ const orderSlice = createSlice({
                 })
             })
             .addCase(createOrders.fulfilled, (state, action) => {
-                state.orders.push(...action.payload); // agregás todas las nuevas ordenes al estado global
+                state.orders.unshift(...action.payload); // agregás todas las nuevas ordenes al estado global
                 state.loading = false;
             })
             .addCase(createOrders.rejected, (state, action) => {

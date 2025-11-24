@@ -17,7 +17,7 @@ const DetalleProducto = () => {
   const { ultimaRuta } = useSelector((state) => state.UIs);
   const [agregado, setAgregado] = useState(false);
   const navigate = useNavigate();
-
+  const { items: categories } = useSelector((state) => state.categories);
 
     useEffect(() => {
       if(productoSeleccionado?.id !== Number(id)){ // evitamos hacer el fetch si ya tenemos el producto seleccionado en el estado
@@ -115,7 +115,7 @@ const DetalleProducto = () => {
         <div className="detalles-tecnicos">
           <h2>Detalle del Producto</h2>
           <ul>
-            <li><strong>Categoria:</strong> {productoSeleccionado.categoryName || "Sin Categoria"}</li>
+            <li><strong>Categoria:</strong>{categories.find(cat => Number(cat.id) === Number(productoSeleccionado.categoryId))?.description || "Sin categoría"}</li>
             <li><strong>Estado:</strong> {productoSeleccionado.active ? "Nuevo" : "Inactivo"}</li>
             <li><strong>Stock:</strong> {productoSeleccionado.stock > 0 ? `${productoSeleccionado.stock} disponibles` : "Sin stock"}</li>
           </ul>

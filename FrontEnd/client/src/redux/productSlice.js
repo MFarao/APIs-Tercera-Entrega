@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { updateCategory } from "./categoriesSlice";
 import { updateDiscount, createDiscount, deactivateDiscount } from "./discountSlice";
- 
+import { createOrders } from "./orderSlice";
+
 const URL = "http://localhost:4002/products";
 
 const calcPrecioDescuento = (precio, porcentaje) => {
@@ -100,6 +101,9 @@ const productSlice = createSlice({
         if (index !== -1) {
           state.items[index] = action.payload;
         }
+        if (state.productoSeleccionado && state.productoSeleccionado.id === action.payload.id) {
+          state.productoSeleccionado = action.payload;
+        }
       })
       .addCase(in_activateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(
@@ -156,6 +160,14 @@ const productSlice = createSlice({
             ? { ...p, discount: null, priceDescuento: null }
             : p
         );
+      })
+      .addCase(createOrders.fulfilled, (state, action) => {
+        action.payload.forEach((orden) => {
+          const index = state.items.findIndex((p) => p.id === orden.idProducto);
+          if (index !== -1) {
+            state.items[index].stock -= orden.cantidadProducto;
+          }
+        });
       })
   },
 });

@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.entity;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -51,7 +52,7 @@ public class Order {
     private String envio_a;
 
     @Column
-    private LocalDate fecha = LocalDate.now();
+    private LocalDate fecha = LocalDate.now(ZoneId.of("America/Argentina/Buenos_Aires"));
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PAGO;

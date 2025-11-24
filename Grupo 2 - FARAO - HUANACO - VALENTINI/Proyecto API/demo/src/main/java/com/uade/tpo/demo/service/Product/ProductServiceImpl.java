@@ -124,6 +124,8 @@ public class ProductServiceImpl implements ProductService{
             if (productUpdateRequest.getCategoryId() != null && categoryRepository.existsById(productUpdateRequest.getCategoryId())) {
                 Optional<Category> c = categoryRepository.findById(productUpdateRequest.getCategoryId());
                 product.setCategory(c.get());
+            } else{
+                product.setCategory(null);
             }
             if (productUpdateRequest.getPrice() != null && productUpdateRequest.getPrice() > 0) {
                 if (product.getPrecioDescuento() != null && product.getDiscount() != null) { // si tiene descuento recalculamos el precio descuento
@@ -132,7 +134,7 @@ public class ProductServiceImpl implements ProductService{
                 }else{
                     product.setPrecio(productUpdateRequest.getPrice());
                 }
-            }
+            } 
             if (productUpdateRequest.getStock() != null && productUpdateRequest.getStock() >= 0){
                 product.setStock(productUpdateRequest.getStock());
                 if(product.getStock()==0 && product.isActivo()){ // si el stock es 0 y esta activo, lo desactivamos

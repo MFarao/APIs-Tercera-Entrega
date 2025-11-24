@@ -13,7 +13,9 @@ const CheckoutProducto = ({ p }) => { // se encarga de renderizar el componente 
       <div className="quantity-selector">
         <button className="qty-btn"  onClick={() => dispatch(sacarCarrito(p))}>−</button>
         <span className="qty-value">{p.cantidad}</span>
-        <button className="qty-btn" onClick={() => dispatch(sumarCarrito(p))}>+</button>
+        <button className="qty-btn" 
+        onClick={() => dispatch(sumarCarrito(p))}
+        disabled={p.cantidad >= p.stock}>+</button>
       </div>
       <div className="checkout-stock">
         {p.stock > 0 ? (
