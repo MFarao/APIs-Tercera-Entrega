@@ -45,9 +45,11 @@ const ControlProducto = () => {
           <tr>
             <th>ID</th>
             <th>Nombre</th>
-            <th>Descripcion</th>
+            <th>Categoria</th>
             <th>Precio</th>
             <th>Con descuento</th>
+            <th>% Descuento</th>
+            <th>Fin de descuento</th>
             <th>Stock</th>
             <th>Estado</th>
             <th>Imagenes</th>

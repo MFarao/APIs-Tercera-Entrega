@@ -9,9 +9,11 @@ const ProductRow = ({ producto, onEditar, onToggleActivo }) => {
     <tr>
       <td>{producto.id}</td>
       <td>{producto.name}</td>
-      <td>{producto.description}</td>
+      <td>{producto.categoryName ?? "Sin categoría"}</td>
       <td>${producto.price}</td>
       <td>{producto.priceDescuento ? `$${producto.priceDescuento}` : "-"}</td>
+      <td>{producto.priceDescuento ? `${Math.round((1 - producto.priceDescuento / producto.price) * 100)}%` : "-"}</td>
+      <td>{producto.discountEndDate ? new Date(producto.discountEndDate).toLocaleDateString() : "-"}</td>
       <td>{producto.stock}</td>
       <td>
         <span className={producto.active ? "activo" : "inactivo"}>

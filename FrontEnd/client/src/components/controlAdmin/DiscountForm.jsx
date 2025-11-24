@@ -21,8 +21,8 @@ const DiscountForm = ({ discount, onClose }) => {
         percentage: discount.percentage.toString(),
         startDate: discount.startDate,
         endDate: discount.endDate,
-        productsId: "",      // no se precargan porque no vienen en el DTO
-        categoriesId: "",    // pero se pueden asignar nuevos
+        productsId: discount.productsId ? discount.productsId.join(", ") : "", 
+        categoriesId: discount.categoriesId ? discount.categoriesId.join(", ") : "",
       });
     } else {
       setFormData({
@@ -70,7 +70,7 @@ const DiscountForm = ({ discount, onClose }) => {
 
     const payload = {
       ...formData,
-      percentage: parseFloat(formData.percentage),
+      percentage: Number(formData.percentage),
       productsId: formData.productsId
         .split(",")
         .map((id) => parseInt(id.trim()))

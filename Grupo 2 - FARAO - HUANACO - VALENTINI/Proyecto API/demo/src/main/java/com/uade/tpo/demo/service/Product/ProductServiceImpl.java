@@ -250,10 +250,12 @@ public class ProductServiceImpl implements ProductService{
         if (tieneDescuento(product.getId()) && product.getDiscount() != null) {
             dto.setPriceDescuento(product.getPrecioDescuento());
             dto.setDiscountEndDate(product.getDiscount().getEndDate());
+            dto.setDiscountId(product.getDiscount().getId());
         }
         else{
             dto.setPriceDescuento(null);
             dto.setDiscountEndDate(null);
+            dto.setDiscountId(null);
         }
         return dto;
     }

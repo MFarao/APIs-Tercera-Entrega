@@ -12,4 +12,6 @@ public class DiscountDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean active;
+    private List<Long> productsId;
+    private List<Long> categoriesId;
 }

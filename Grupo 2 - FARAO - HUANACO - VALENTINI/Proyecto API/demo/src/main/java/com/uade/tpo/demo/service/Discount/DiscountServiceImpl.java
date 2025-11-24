@@ -210,6 +210,16 @@ public class DiscountServiceImpl implements DiscountService {
         discountDTO.setStartDate(discount.getStartDate());
         discountDTO.setEndDate(discount.getEndDate());
         discountDTO.setActive(discount.getActive());
+        if (discount.getProduct() != null) {
+            discountDTO.setProductsId(
+                discount.getProduct().stream().map(Product::getId).toList()
+            );
+        }
+        if (discount.getCategory() != null) {
+            discountDTO.setCategoriesId(
+                discount.getCategory().stream().map(Category::getId).toList()
+            );
+        }
         return discountDTO;
     }
 }
