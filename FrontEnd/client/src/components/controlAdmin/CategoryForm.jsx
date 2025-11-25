@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateCategory, createCategory } from "../../redux/categoriesSlice.js";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
 import { updateDiscount } from "../../redux/discountSlice.js";
 
 const CategoryForm = ({ category, onClose }) => {
@@ -19,40 +18,32 @@ const CategoryForm = ({ category, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (category) {
+      const res = await dispatch(
+        updateCategory({ body: { id: category.id, description } })
+      ).unwrap();
 
-    try {
-      if (category) {
-        const res = await dispatch(
-          updateCategory({ body: { id: category.id, description } })
-        ).unwrap();
-
-        if (discountId) {
-          const updateBody = {
-            id: Number(discountId),
-            productsId: [],
-            categoriesId: [res.id],
-          };
-          await dispatch(updateDiscount(updateBody)).unwrap();
-        }
-      } else {
-        const res = await dispatch(createCategory({ description })).unwrap();
-
-        if (discountId) {
-          const updateBody = {
-            id: Number(discountId),
-            productsId: [],
-            categoriesId: [res.id],
-          };
-          await dispatch(updateDiscount(updateBody)).unwrap();
-        }
-
-        Swal.fire("Agregada", "La categoría fue creada correctamente ✅", "success");
+      if (discountId) {
+        const updateBody = {
+          id: Number(discountId),
+          productsId: [],
+          categoriesId: [res.id],
+        };
+        await dispatch(updateDiscount(updateBody)).unwrap();
       }
+    } else {
+      const res = await dispatch(createCategory({ description })).unwrap();
 
-      onClose();
-    } catch (error) {
-      Swal.fire("Error", error?.message || "No se pudo guardar la categoría.", "error");
+      if (discountId) {
+        const updateBody = {
+          id: Number(discountId),
+          productsId: [],
+          categoriesId: [res.id],
+        };
+        await dispatch(updateDiscount(updateBody)).unwrap();
+      }
     }
+    onClose();
   };
 
   return (

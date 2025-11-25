@@ -73,8 +73,19 @@ const categoriesSlice = createSlice({
         );
         Swal.fire("Editada", "La categoría fue actualizada correctamente ✅", "success");
       })
+      .addCase(updateCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        Swal.fire("Error", "No se pudo guardar la categoría.", "error");
+      })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.items = [...state.items, action.payload];
+        Swal.fire("Agregada", "La categoría fue creada correctamente ✅", "success");
+      })
+      .addCase(createCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        Swal.fire("Error", "No se pudo crear la categoría.", "error");
       })
       .addCase(deleteCategory.pending, (state) => {
         state.loading = true;
@@ -84,10 +95,12 @@ const categoriesSlice = createSlice({
         const deletedCategoryId = action.payload;
         // Hace un filter para crear un nuevo array sin la categoria eliminada
         state.items = state.items.filter(cat => cat.id !== deletedCategoryId);
+        Swal.fire("Eliminada", "La categoría fue eliminada correctamente ✅", "success");
       })
-      .addCase(deleteCategory.rejected, (state) => {
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.loading = false;
-        state.error = "No se pudo eliminar la categoría.";
+        state.error = action.error.message;
+        Swal.fire("Error", "No se pudo eliminar la categoría.", "error");
       });
   },
 });
