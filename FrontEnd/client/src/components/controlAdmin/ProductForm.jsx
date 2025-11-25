@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector  } from "react-redux";
 import Swal from "sweetalert2";
 import { createProduct, updateProduct } from "../../redux/productSlice";
+import { updateDiscount } from "../../redux/discountSlice";
 
 const ProductForm = ({ product, onClose }) => {
   const dispatch = useDispatch();
   const { items: categories } = useSelector((state) => state.categories);
+  const { items: discounts } = useSelector((state) => state.discounts);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -14,6 +16,7 @@ const ProductForm = ({ product, onClose }) => {
     categoryId: "",
     imageUrls: "",
     stock: 1,
+    discountId: "",
   });
 
   const handleChange = (e) => {
@@ -45,6 +48,7 @@ const ProductForm = ({ product, onClose }) => {
       price: formData.price,
       categoryId: formData.categoryId === "" ? null : Number(formData.categoryId),
       stock: formData.stock,
+      discountId: formData.discountId === "" ? null : Number(formData.discountId),
     };
 
     if (formData.imageUrls) {
@@ -64,7 +68,16 @@ const ProductForm = ({ product, onClose }) => {
     : createProduct(body);
 
   dispatch(action)
-    .then(() => {
+    .then(async (res) => {
+    // 🔹 Si se asignó un descuento, actualizamos también el discount en Redux
+
+      const updateBody ={ 
+        id: formData.discountId,
+        productsId: [product.id],
+        categoriesId: []
+      };
+      await dispatch(updateDiscount(updateBody)).unwrap();
+
       Swal.fire({
         title: "Producto cargado ✅",
         text: "El producto fue guardado correctamente.",
@@ -151,7 +164,20 @@ const ProductForm = ({ product, onClose }) => {
           ))}
         </select>
 
-
+{product && (
+        <><label>Descuento</label><select
+            name="discountId"
+            value={formData.discountId}
+            onChange={handleChange}
+          >
+            <option value="">Sin descuento</option>
+            {discounts.filter((d) => d.active).map((d) => (
+              <option key={d.id} value={String(d.id)}>
+                {`${d.percentage}% - ${d.startDate} _ ${d.endDate}`}
+              </option>
+            ))}
+          </select></>
+)}
 
         <input
           type="text"

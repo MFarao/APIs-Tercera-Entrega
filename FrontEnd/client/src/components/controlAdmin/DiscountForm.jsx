@@ -130,23 +130,27 @@ const DiscountForm = ({ discount, onClose }) => {
           required
         />
 
-        <label>Asignar Productos (IDs separados por coma)</label>
-        <input
-          type="text"
-          name="productsId"
-          value={formData.productsId}
-          onChange={handleChange}
-          placeholder="Ej: 1, 2, 3"
-        />
+        {discount && (
+        <>
+          <label>Asignar Productos (IDs separados por coma)</label>
+          <input
+            type="text"
+            name="productsId"
+            value={formData.productsId}
+            onChange={handleChange}
+            placeholder="Ej: 1, 2, 3"
+          />
 
-        <label>Asignar Categorías (IDs separados por coma)</label>
-        <input
-          type="text"
-          name="categoriesId"
-          value={formData.categoriesId}
-          onChange={handleChange}
-          placeholder="Ej: 10, 12"
-        />
+          <label>Asignar Categorías (IDs separados por coma)</label>
+          <input
+            type="text"
+            name="categoriesId"
+            value={formData.categoriesId}
+            onChange={handleChange}
+            placeholder="Ej: 10, 12"
+          />
+        </>
+      )}
 
         <div className="form-actions">
           <button type="submit">Guardar</button>

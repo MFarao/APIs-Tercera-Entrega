@@ -6,14 +6,11 @@ import { createOrders } from "./orderSlice";
 
 const URL = "http://localhost:4002/products";
 
-const calcPrecioDescuento = (precio, porcentaje) => {
-  if (porcentaje == null) return null;
-  // porcentaje viene como entero (ej: 50) → 50%
-  const pd = precio * (1 - porcentaje / 100);
-  return Math.round(pd * 100) / 100;
+const descuentoVigente = (endDate) => {
+  if (!endDate) return false;
+  return new Date(endDate) >= new Date();
 };
 
- 
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async () => {
   const { data } = await axios.get(URL);
   return data;
@@ -126,40 +123,89 @@ const productSlice = createSlice({
         );
       })
       .addCase(createDiscount.fulfilled, (state, action) => {
-        const discount = action.payload;
-        state.items = state.items.map((p) =>
-          p.discount?.id === discount.id ||
-          (Array.isArray(discount.productsId) && discount.productsId.includes(p.id)) || 
-          (Array.isArray(discount.categoriesId) && discount.categoriesId.includes(p.categoryId))
-            ? {
-                ...p,
-                discount,
-                priceDescuento: calcPrecioDescuento(p.precio ?? p.price, discount.percentage),
-              }
-            : p
-        );
+        const d = action.payload;
+        const porcentajeDecimal = d.percentage; // backend → 0.20
+
+        // Asignar productos explícitos
+        if (Array.isArray(d.productsId)) {
+          d.productsId.forEach((prodId) => {
+            const p = state.items.find((x) => x.id === prodId);
+            if (p) {
+              p.discountId = d.id;
+              if (descuentoVigente(d.endDate)) {
+        p.priceDescuento = Math.round(p.price * (1 - porcentajeDecimal));
+        p.discountEndDate = d.endDate;
+      } else {
+        p.priceDescuento = null;
+        p.discountEndDate = null;
+      }
+            }
+          });
+        }
+
+        // Asignar productos por categorías (backend recorre TODOS los productos de cada categoría)
+        if (Array.isArray(d.categoriesId)) {
+          state.items.forEach((p) => {
+            if (d.categoriesId.includes(p.categoryId)) {
+              p.discountId = d.id;
+              if (descuentoVigente(d.endDate)) {
+        p.priceDescuento = Math.round(p.price * (1 - porcentajeDecimal));
+        p.discountEndDate = d.endDate;
+      } else {
+        p.priceDescuento = null;
+        p.discountEndDate = null;
+      }
+            }
+          });
+        }
       })
       .addCase(updateDiscount.fulfilled, (state, action) => {
-        const discount = action.payload;
-        state.items = state.items.map((p) =>
-          p.discount?.id === discount.id ||
-          (Array.isArray(discount.productsId) && discount.productsId.includes(p.id)) ||
-          (Array.isArray(discount.categoriesId) && discount.categoriesId.includes(p.categoryId))
-            ? {
-                ...p,
-                discount,
-                priceDescuento: calcPrecioDescuento(p.precio ?? p.price, discount.percentage),
-              }
-            : p
-        );
+        const d = action.payload;
+        const porcentajeDecimal = d.percentage / 100;
+
+        // Reasignar explícitamente productsId (backend hace eso)
+        if (Array.isArray(d.productsId)) {
+          d.productsId.forEach((prodId) => {
+            const p = state.items.find((x) => x.id === prodId);
+            if (p) {
+              p.discountId = d.id;
+              if (descuentoVigente(d.endDate)) {
+        p.priceDescuento = Math.round(p.price * (1 - porcentajeDecimal) * 100) / 100;
+        p.discountEndDate = d.endDate;
+      } else {
+        p.priceDescuento = null;
+        p.discountEndDate = null;
+      }
+        }
+      });
+      }
+
+        // Reasignar categorías (backend recorre TODOS los productos de cada categoría)
+        if (Array.isArray(d.categoriesId)) {
+          state.items.forEach((p) => {
+            if (d.categoriesId.includes(p.categoryId)) {
+              p.discountId = d.id;
+              if (descuentoVigente(d.endDate)) {
+        p.priceDescuento = Math.round(p.price * (1 - porcentajeDecimal) * 100) / 100;
+        p.discountEndDate = d.endDate;
+      } else {
+        p.priceDescuento = null;
+        p.discountEndDate = null;
+      }
+            }
+          });
+        }
       })
       .addCase(deactivateDiscount.fulfilled, (state, action) => {
-        const discount = action.payload;
-        state.items = state.items.map((p) =>
-          p.discount?.id === discount.id
-            ? { ...p, discount: null, priceDescuento: null }
-            : p
-        );
+        const discountId = action.payload.id;
+
+  state.items.forEach((p) => {
+    if (p.discountId === discountId) {
+      p.discountId = null;
+      p.priceDescuento = null;
+      p.discountEndDate = null;
+    }
+  });
       })
       .addCase(createOrders.fulfilled, (state, action) => {
         action.payload.forEach((orden) => {

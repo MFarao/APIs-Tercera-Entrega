@@ -12,8 +12,9 @@ export const fetchDiscounts = createAsyncThunk("discounts/fetchDiscounts", async
   return data;
 });
 
-export const updateDiscount = createAsyncThunk("discounts/updateDiscount", async ( {body}, { getState }) => { // inyecyamos get state para poder acceder al token
-      const token = getState().user.token; // sacamos el token del estado global   
+export const updateDiscount = createAsyncThunk("discounts/updateDiscount", async ( body, { getState }) => { // inyecyamos get state para poder acceder al token
+      console.log("Body en updateDiscount:", body);
+  const token = getState().user.token; // sacamos el token del estado global   
         const { data } = await axios.put(`${URL}/${body.id}`, body, {
         headers: {Authorization: `Bearer ${token}`,},
         }); //hacemos un PUT con los datos y el token

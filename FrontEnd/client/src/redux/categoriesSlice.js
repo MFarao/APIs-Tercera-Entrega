@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const URL = "http://localhost:4002/categories";
 
@@ -70,6 +71,7 @@ const categoriesSlice = createSlice({
         state.items = state.items.map(cat =>
           cat.id === updatedCategory.id ? updatedCategory : cat
         );
+        Swal.fire("Editada", "La categoría fue actualizada correctamente ✅", "success");
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.items = [...state.items, action.payload];
