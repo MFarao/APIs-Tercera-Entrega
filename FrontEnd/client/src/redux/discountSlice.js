@@ -68,25 +68,16 @@ const discountsSlice = createSlice({
                 discount.id === updatedDiscount.id ? updatedDiscount : discount
             );
         })
-        .addCase(updateDiscount.rejected, (state, action) => {
-            state.error = action.error.message;
-        })
         .addCase(createDiscount.fulfilled, (state, action) => {
           const newDiscount = { ...action.payload };
           newDiscount.percentage = Math.round(newDiscount.percentage * 100);
           state.items = [...state.items, newDiscount];
-          state.error = null;
-
-        })
-        .addCase(createDiscount.rejected, (state, action) => {
-            state.error = action.error.message;
         })
         .addCase(deactivateDiscount.fulfilled, (state, action) => {
             const updatedDiscount = action.payload;
             state.items = state.items.map(discount =>
                 discount.id === updatedDiscount.id ? updatedDiscount : discount
             );
-            state.error = null;
         })
     },
 });

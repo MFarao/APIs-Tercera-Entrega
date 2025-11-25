@@ -7,8 +7,7 @@ const CategoryForm = ({ category, onClose }) => {
   const [description, setDescription] = useState("");
   const [discountId, setDiscountId] = useState(""); 
   const dispatch = useDispatch();
-  const { items: discounts, error: errorD } = useSelector((state) => state.discounts);
-  const { error: errorC } = useSelector((state) => state.categories);
+  const { items: discounts } = useSelector((state) => state.discounts);
 
   useEffect(() => {
     if (category) {
@@ -20,12 +19,9 @@ const CategoryForm = ({ category, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (category) {
-      const res = await dispatch(updateCategory({ body: { id: category.id, description } })).unwrap();
-      if(errorC){
-        Swal.fire("Error", "No se pudo guardar la categoría.", "error");
-      }else{
-        Swal.fire("Editada", "La categoría fue actualizada correctamente ✅", "success");
-      }
+      const res = await dispatch(
+        updateCategory({ body: { id: category.id, description } })
+      ).unwrap();
 
       if (discountId) {
         const updateBody = {
@@ -37,11 +33,6 @@ const CategoryForm = ({ category, onClose }) => {
       }
     } else {
       const res = await dispatch(createCategory({ description })).unwrap();
-      if(errorC){
-        Swal.fire("Error", "No se pudo crear la categoría.", "error");
-      }else{
-        Swal.fire("Editada", "La categoría fue creada correctamente ✅", "success");
-      }
 
       if (discountId) {
         const updateBody = {

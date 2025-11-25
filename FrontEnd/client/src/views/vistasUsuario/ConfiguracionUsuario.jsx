@@ -14,7 +14,7 @@ const ConfiguracionUsuario = () => {
         password: ""
     });
     const navigate = useNavigate();
-    const {userEnSesion, error} = useSelector((state) => state.user);
+    const {userEnSesion} = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
@@ -48,35 +48,34 @@ const ConfiguracionUsuario = () => {
             icon: 'error',
         });
         }else{
-            const body = { idUser: userEnSesion.id };// creamos el body con el id y dependiendo q haya lo agregamos
+            try {
+                const body = { idUser: userEnSesion.id };// creamos el body con el id y dependiendo q haya lo agregamos
 
-            if (datos.email) body.email = datos.email;
-            if (datos.firstname) body.firstname = datos.firstname;
-            if (datos.lastname) body.lastname = datos.lastname;
-            if (datos.password) body.password = datos.password;
-            dispatch(updateUser(body)) // despachamos las modificaciones
-            if (error){ // si hay error mostramos un swal que lo avise
+                if (datos.email) body.email = datos.email;
+                if (datos.firstname) body.firstname = datos.firstname;
+                if (datos.lastname) body.lastname = datos.lastname;
+                if (datos.password) body.password = datos.password;
+                dispatch(updateUser(body)) // despachamos las modificaciones
                 Swal.fire({
-                    title: "Error",
-                    text: "No se pudo modificar los datos del usuario.",
-                    icon: "error",
-                    confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-                })
-            }else{
-                Swal.fire({ // si no hay error hacemos el handle de logout y avisamos que se implementaron bien
-                title: 'Cambios guardados ✅',
-                text: 'Sus cambios se procesaron correctamente.',
-                icon: 'success',
-                confirmButtonText: 'Salir',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    handleLogout()
-                }
-            });
+                    title: 'Cambios guardados ✅',
+                    text: 'Sus cambios se procesaron correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Salir',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        handleLogout()
+                    }
+                });
+                
             }
+            catch(error)
+                {Swal.fire({
+                title: 'Error',
+                text: 'No se pudo modificar los datos.',
+                icon: 'error',
+            });}
         }
     }
-    
     
     return (
         <div className="account-container">

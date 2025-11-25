@@ -51,14 +51,6 @@ const ControlOdrenes = () => {
 
     const body = { status: proxFase };
     dispatch(updateStatus({ body, idOrder: orden.id }));
-    if (error){
-       Swal.fire({
-          title: "Error",
-          text: "No se pudo cambiar de estado a la orden.",
-          icon: "error",
-          confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-      })
-    }
   };
 
   return (

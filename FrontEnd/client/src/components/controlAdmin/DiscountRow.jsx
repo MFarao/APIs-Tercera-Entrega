@@ -1,6 +1,7 @@
 const DiscountRow = ({ discount, onEdit, onToggle }) => {
   return (
     <tr>
+      <td>{discount.id}</td>
       <td>{discount.percentage}%</td>
       <td>{discount.startDate}</td>
       <td>{discount.endDate}</td>

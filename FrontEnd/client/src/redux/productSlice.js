@@ -50,18 +50,6 @@ export const in_activateProduct = createAsyncThunk(
       return data; // Devolvemos el producto actualizado
   }
 );
-
-export const selectVisibleProducts = (state) => {
-  const { currentPage, pageSize, items } = state.products;
-  const start = (currentPage - 1) * pageSize;
-  const end = start + pageSize;
-  return items.slice(start, end);
-};
-
-export const selectTotalProductPages = (state) => {
-  const { pageSize, items } = state.products;
-  return Math.max(1, Math.ceil(items.length / pageSize));
-};
  
 const productSlice = createSlice({
   name: "products",
@@ -72,8 +60,6 @@ const productSlice = createSlice({
     filtrosAplicar: null, // estado para almacenar los filtros aplicados
     busqueda: "",
     productoSeleccionado: null,
-    currentPage: 1, 
-    pageSize: 12,
   },
   reducers: {        
     setFiltrosAplicar: (state, action) => { // agregamos una accion de filtros q llene la variable con los datos
@@ -86,13 +72,6 @@ const productSlice = createSlice({
       state.productoSeleccionado = state.items.find(
         (product) => product.id === Number(action.payload)
       ) || null;
-    },
-    setPage: (state, action) => {
-      state.currentPage = action.payload;
-    },
-    setPageSize: (state, action) => {
-      state.pageSize = action.payload;
-      state.currentPage = 1; // resetear a primera página
     }
   },
   extraReducers: (builder) => {
@@ -122,10 +101,6 @@ const productSlice = createSlice({
         if (state.productoSeleccionado && state.productoSeleccionado.id === action.payload.id) {
           state.productoSeleccionado = action.payload;
         }
-      })
-      .addCase(in_activateProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
       })
       .addCase(in_activateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(
@@ -246,5 +221,4 @@ const productSlice = createSlice({
 export const { setFiltrosAplicar } = productSlice.actions;
 export const { setBusqueda } = productSlice.actions;
 export const { setProductoSeleccionado } = productSlice.actions;
-export const { setPage, setPageSize } = productSlice.actions;
 export default productSlice.reducer;

@@ -59,6 +59,7 @@ const DetalleProducto = () => {
         navigate("/checkout");
       }
     });
+
   };
 
 

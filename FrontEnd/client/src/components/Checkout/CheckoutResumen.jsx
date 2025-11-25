@@ -10,8 +10,6 @@ const CheckoutResumen = () => {
   const {total} = useSelector((state) => state.cart);
   const {token} = useSelector((state) => state.user);
   const {conectado, envio} = useSelector((state) => state.UIs);
-  const {error} = useSelector((state) => state.order);
-
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
@@ -29,14 +27,6 @@ const CheckoutResumen = () => {
       }));
 
       await dispatch(createOrders({ ordenes: ordenesACrear })).unwrap();
-      if(error){
-         Swal.fire({
-            title: "Error",
-            text: "No se pudo crear las ordenes.",
-            icon: "error",
-            confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-        })
-      }
 
       dispatch(vaciarCarrito());
 
