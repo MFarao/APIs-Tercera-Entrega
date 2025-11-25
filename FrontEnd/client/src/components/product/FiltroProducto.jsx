@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../estilos/FiltroProducto.css";
 import logo from "../../assets/logo.png";
 import Swal from "sweetalert2";
-import { setFiltrosAplicar } from "../../redux/productSlice";
+import { setFiltrosAplicar, setPage  } from "../../redux/productSlice";
 import {useDispatch, useSelector} from 'react-redux'
 
 
@@ -32,6 +32,7 @@ const {items} = useSelector((state) => state.categories);
           precioMin: precioMin ? Number(precioMin) : null,
           precioMax: precioMax ? Number(precioMax) : null,
         }));
+        dispatch(setPage(1));
       }
     });
   };

@@ -44,7 +44,6 @@ const ControlDescuento = () => {
             <table className="panel-layout-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Porcentaje</th>
                         <th>Fecha de Inicio</th>
                         <th>Fecha de Fin</th>

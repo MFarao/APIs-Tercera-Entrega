@@ -117,6 +117,10 @@ const orderSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+            .addCase(updateStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
             .addCase(updateStatus.fulfilled, (state, action) => {
                 const index = state.orders.findIndex( // buscamos el id de la orden actualizada
                 (order) => order.id === action.payload.id
@@ -129,13 +133,10 @@ const orderSlice = createSlice({
             .addCase(updateStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-
-                Swal.fire({
-                    title: "Error",
-                    text: "No se pudo cambiar de estado a la orden.",
-                    icon: "error",
-                    confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-                })
+            })
+            .addCase(createOrders.pending, (state) => {
+                state.loading = true;
+                state.error = null;
             })
             .addCase(createOrders.fulfilled, (state, action) => {
                 state.orders.unshift(...action.payload); // agregás todas las nuevas ordenes al estado global
@@ -144,13 +145,6 @@ const orderSlice = createSlice({
             .addCase(createOrders.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-
-                Swal.fire({
-                    title: "Error",
-                    text: "No se pudo crear las ordenes.",
-                    icon: "error",
-                    confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-                })
             })
 
     },

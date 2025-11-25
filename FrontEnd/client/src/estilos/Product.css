@@ -151,3 +151,15 @@
 .productos-page{
   padding-left: rem;
 }
+
+.no-products-container {
+  text-align: center;
+  margin: 2rem 0;
+  color: #6b21a8;
+}
+
+.no-products-img {
+  width: 120px;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}

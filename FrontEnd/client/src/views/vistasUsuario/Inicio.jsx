@@ -22,9 +22,16 @@ const handleSubmit = (e) => {
   e.preventDefault();
   // 1. Autenticamos y obtenemos token
     dispatch(authenticateUser(formData)).then((action) => {
-      if (action.type === "auth/authenticateUser/rejected") return;
-      // 2. Con el token ya en el estado, traemos los datos del usuario
-      dispatch(fetchUserData());
+      if (error) { // si hay error lo muestra
+          Swal.fire({
+          title: "Acceso denegado",
+          text: "No se pudo realizar el inicio",
+          icon: "error",
+          confirmButtonText: "Entendido",
+        });
+      };
+      // 2. Con el token cargado en estado global, traemos los datos del usuario logeado
+      dispatch(fetchUserData()); 
     });
 };
 

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { un_blockUser } from "../../redux/userSlice";
+import { un_blockUser, selectVisibleUsers, selectTotalUserPages, setPage } from "../../redux/userSlice";
 
 const ControlUsuarios = () => {
   const dispatch = useDispatch();
-  const { users, error, userEnSesion} = useSelector((state) => state.user);
+  const { users, error, userEnSesion, currentPage } = useSelector((state) => state.user);
+  const visibleUsers = useSelector(selectVisibleUsers);
+  const totalPages = useSelector(selectTotalUserPages);
 
   const handleBloqueo = async (user) => {
     const confirm = await Swal.fire({
@@ -54,12 +56,37 @@ const ControlUsuarios = () => {
     }
 
     dispatch(un_blockUser(body))
-    
+    if(error){
+      Swal.fire({
+            title: "Error",
+            text: "No se pudo realizar la accion sobre el usuario.",
+            icon: "error",
+            confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
+        })
+    }
   };
 
   return (
     <div className="panel-layout-container">
       <h2 className="header h2">Usuarios</h2>
+      <div className="pagination">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => dispatch(setPage(currentPage - 1))}
+        >
+          Prev
+        </button>
+        <span>
+          Página {currentPage} de {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => dispatch(setPage(currentPage + 1))}
+        >
+          Next
+        </button>
+      </div>
+
       {error && <p className="error">{error}</p>}
       <table className="panel-layout-table">
         <thead>
@@ -73,7 +100,7 @@ const ControlUsuarios = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {visibleUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.email}</td>

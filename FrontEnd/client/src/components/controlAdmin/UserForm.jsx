@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { updateUser, createUser } from "../../redux/userSlice";
 
 const UserForm = ({ user, onClose, onRefresh }) => {
+  const dispatch = useDispatch();
+  const { users, userEnSesion } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -42,38 +47,17 @@ const UserForm = ({ user, onClose, onRefresh }) => {
 
     if (!confirm.isConfirmed) return;
 
-    const method = user ? "PUT" : "POST";
-    const url = user
-      ? `http://localhost:4002/users/${user.id}`
-      : "http://localhost:4002/users";
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) throw new Error("Error al guardar usuario");
-
-      Swal.fire({
-        title: "Usuario guardado ✅",
-        icon: "success",
-      });
-
-      onRefresh();
-      onClose();
-    } catch (err) {
-      console.error("Error al guardar usuario:", err);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo guardar el usuario.",
-        icon: "error",
-      });
+    if (user) {
+      await dispatch(updateUser({ idUser: user.id, ...formData }));
+    } else {
+      await dispatch(createUser(formData));
     }
+
+    Swal.fire({
+      title: "Usuario guardado ✅",
+      icon: "success",
+    });
+    onClose();
   };
 
   return (

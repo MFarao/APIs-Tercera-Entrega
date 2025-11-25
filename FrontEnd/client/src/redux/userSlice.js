@@ -55,6 +55,18 @@ export const un_blockUser = createAsyncThunk("users/un_blockUser", async ( body,
 }
 );  
 
+export const selectVisibleUsers = (state) => {
+  const { currentPage, pageSize, users } = state.user;
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  return users.slice(start, end);
+};
+
+export const selectTotalUserPages = (state) => {
+  const { pageSize, users } = state.user;
+  return Math.max(1, Math.ceil(users.length / pageSize));
+};
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -63,12 +75,21 @@ const userSlice = createSlice({
     users: [],
     loading: false,
     error: null,
+    currentPage: 1,
+    pageSize: 10,
   },
   reducers: {
     logout: (state) => {
       state.token = null;
       state.userEnSesion = null;
       state.error = null;
+    },
+    setPage: (state, action) => {
+    state.currentPage = action.payload;
+    },
+    setPageSize: (state, action) => {
+      state.pageSize = action.payload;
+      state.currentPage = 1; // resetear a primera pagina
     }
   },
   extraReducers: (builder) => {
@@ -118,6 +139,10 @@ const userSlice = createSlice({
         state.loading = false;
       })
 
+      .addCase(un_blockUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(un_blockUser.fulfilled, (state, action) => {
         const index = state.users.findIndex( // buscamos el id del usuario actualizado
           (user) => user.id === action.payload.id
@@ -129,15 +154,17 @@ const userSlice = createSlice({
       })
       .addCase(un_blockUser.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
-        Swal.fire({
-            title: "Error",
-            text: "No se pudo realizar la accion sobre el usuario.",
-            icon: "error",
-            confirmButtonColor: "#7b2ff7" // usamos sweet alerts apra mostrar los errores
-        })
+      })
+
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.error = action.payload || action.error.message;
       })
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, setPage, setPageSize } = userSlice.actions;
 export default userSlice.reducer;

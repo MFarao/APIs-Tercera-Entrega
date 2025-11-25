@@ -30,6 +30,11 @@ const handleDelete = async (id) => {
   if (!confirm.isConfirmed) return;
 
     dispatch(deleteCategory(id))
+    if(error){
+      Swal.fire("Error", "No se pudo eliminar la categoría. Aun tiene productos asociados", "error");
+    }else{
+      Swal.fire("Eliminada", "La categoría fue eliminada correctamente ✅", "success");
+    }
 };
   
   return (
