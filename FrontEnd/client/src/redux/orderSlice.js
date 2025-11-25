@@ -42,6 +42,32 @@ export const createOrders = createAsyncThunk("orders/createOrders",
         return data;
     });
 
+export const selectFilteredOrders = (state, filterStatus) => {
+  const { orders } = state.order;
+  return filterStatus
+    ? orders.filter((orden) => orden.status === filterStatus)
+    : orders;
+};
+
+
+export const selectVisibleOrders = (state, filterStatus) => {
+  const { currentPage, pageSize, orders } = state.order;
+  // Primero filtramos
+  const filtered = filterStatus ? orders.filter((o) => o.status === filterStatus) : orders;
+
+  // Después paginamos
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  return filtered.slice(start, end);
+};
+
+export const selectTotalPages = (state, filterStatus) => {
+  const { pageSize, orders } = state.order;
+  const filtered = filterStatus ? orders.filter((o) => o.status === filterStatus) : orders;
+  return Math.ceil(filtered.length / pageSize);
+};
+
+
 const orderSlice = createSlice({
     name: "order",
     initialState: {
@@ -50,11 +76,20 @@ const orderSlice = createSlice({
         filtrosAplicar: null,
         loading: false,
         error: null,
+        currentPage: 1,
+        pageSize: 10,
     },
     reducers: {
         setFiltrosAplicar: (state, action) => { // agregamos una accion de filtros q llene la variable con los datos
         state.filtrosAplicar = action.payload;
-    }
+        },
+        setPage: (state, action) => {
+            state.currentPage = action.payload;
+        },
+        setPageSize: (state, action) => {
+            state.pageSize = action.payload;
+            state.currentPage = 1;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -121,5 +156,5 @@ const orderSlice = createSlice({
     },
 });
 
-export const { setFiltrosAplicar } = orderSlice.actions;
+export const { setFiltrosAplicar, setPage, setPageSize} = orderSlice.actions;
 export default orderSlice.reducer;

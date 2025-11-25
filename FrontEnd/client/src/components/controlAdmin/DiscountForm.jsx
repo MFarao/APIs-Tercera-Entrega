@@ -11,8 +11,8 @@ const DiscountForm = ({ discount, onClose }) => {
     percentage: "",
     startDate: "",
     endDate: "",
-    productsId: "",
-    categoriesId: "",
+    productsId: [],
+    categoriesId: [],
   });
 
   useEffect(() => {
@@ -29,8 +29,8 @@ const DiscountForm = ({ discount, onClose }) => {
         percentage: "",
         startDate: "",
         endDate: "",
-        productsId: "",
-        categoriesId: "",
+        productsId: [],
+        categoriesId: [],
       });
     }
   }, [discount]);
@@ -82,7 +82,7 @@ const DiscountForm = ({ discount, onClose }) => {
     };
 
     if (discount) {
-      await dispatch(updateDiscount({ body: { ...payload, id: discount.id } })).unwrap();
+      await dispatch(updateDiscount({ ...payload, id: discount.id })).unwrap();
     } else {
       await dispatch(createDiscount(payload)).unwrap();
     }

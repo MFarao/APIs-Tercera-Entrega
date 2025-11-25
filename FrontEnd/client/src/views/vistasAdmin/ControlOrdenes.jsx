@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStatus } from "../../redux/orderSlice";
+import { updateStatus, selectVisibleOrders, selectTotalPages, setPage } from "../../redux/orderSlice";
 
 const ControlOdrenes = () => {
   const { orders, error } = useSelector((state) => state.order);
-  const dispatch = useDispatch();
-
   const [filterStatus, setFilterStatus] = useState(""); 
+  const dispatch = useDispatch();
+  const currentPage = useSelector((state) => state.order.currentPage);
+  const pageSize = useSelector((state) => state.order.pageSize);
+
+  const filteredOrders = filterStatus
+    ? orders.filter((o) => o.status === filterStatus)
+    : orders;
+
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
+
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const visibleOrders = filteredOrders.slice(start, end);
+
+
+  useEffect(() => {
+  dispatch(setPage(1)); // cada vez que cambia el filtro, volvemos a página 1
+}, [filterStatus, dispatch]);
+
 
   const handleProxFase = (orden) => {
     if (orden.status === "PAGO") return "PREPARANDO";
@@ -36,10 +53,6 @@ const ControlOdrenes = () => {
     dispatch(updateStatus({ body, idOrder: orden.id }));
   };
 
-  const filteredOrders = filterStatus
-    ? orders.filter((orden) => orden.status === filterStatus)
-    : orders;
-
   return (
     <div className="panel-layout-container">
       <h2 className="header h2">Órdenes</h2>
@@ -59,6 +72,24 @@ const ControlOdrenes = () => {
         </select>
       </div>
 
+      <div className="pagination">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => dispatch(setPage(currentPage - 1))}
+        >
+          Prev
+        </button>
+        <span>
+          Página {currentPage} de {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => dispatch(setPage(currentPage + 1))}
+        >
+          Next
+        </button>
+      </div>
+
       <table className="panel-layout-table">
         <thead>
           <tr>
@@ -73,7 +104,7 @@ const ControlOdrenes = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredOrders.map((orden) => (
+          {visibleOrders.map((orden) => (
             <tr key={orden.id}>
               <td>{orden.idUser}</td>
               <td>{orden.nombreProducto}</td>

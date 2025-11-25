@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "../../estilos/Ordenes.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setFiltrosAplicar } from "../../redux/orderSlice";
+import { setFiltrosAplicar, setPage, selectVisibleOrders, selectTotalPages } from "../../redux/orderSlice";
 
 const Ordenes = () => {
   const dispatch = useDispatch();
-  const { orders, error, filtrosAplicar, loading } = useSelector((state) => state.order);
+  const { orders, error, filtrosAplicar, currentPage } = useSelector((state) => state.order);
   const [filtroEstado, setFiltroEstado] = useState("TODOS");
 
   useEffect(() => {
     dispatch(setFiltrosAplicar({ estado: filtroEstado }));
+    dispatch(setPage(1));
   }, [filtroEstado, dispatch]);
 
-  const ordenesFiltradas = orders.filter((orden) => {
-    const coincideEstado =
-      filtrosAplicar?.estado === "TODOS" || orden.status === filtrosAplicar?.estado;
-    return coincideEstado;
-  });
-
+  const visibleOrders = useSelector((state) =>
+    selectVisibleOrders(state, filtroEstado === "TODOS" ? null : filtroEstado)
+  );
+  const totalPages = useSelector((state) =>
+    selectTotalPages(state, filtroEstado === "TODOS" ? null : filtroEstado)
+  );
 
   return (
      <div className="ordenes-container">
@@ -35,8 +36,26 @@ const Ordenes = () => {
         ))}
       </div>
 
+      <div className="pagination">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => dispatch(setPage(currentPage - 1))}
+        >
+          Prev
+        </button>
+        <span>
+          Página {currentPage} de {Math.max(1, totalPages)}
+        </span>
+        <button
+          disabled={currentPage === totalPages || totalPages === 0}
+          onClick={() => dispatch(setPage(currentPage + 1))}
+        >
+          Next
+        </button>
+      </div>
+
       <div className="ordenes-lista">
-        {ordenesFiltradas.map((orden) => (
+        {visibleOrders.map((orden) => (
           <div key={orden.id} className="orden-card">
             <div className="orden-card-header">
               <span className="orden-id">Orden #{orden.id}</span>
